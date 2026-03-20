@@ -1,0 +1,19 @@
+algorithms:
+  baseline:
+    enabled: true
+  centralized_ppo:
+    enabled: true
+    config: configs/ppo_centralized.yaml
+  shared_ppo:
+    enabled: true
+    config: configs/ppo_shared.yaml
+  independent_ppo:
+    enabled: true
+    config: configs/ppo_independent.yaml
+  mappo:
+    enabled: false
+    config: configs/ppo_mappo.yaml
+
+intensities: ["low", "medium", "high"]
+train_route_seeds: [0, 1, 2]
+test_route_seeds: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109]

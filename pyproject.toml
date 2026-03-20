@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "traffic-thesis-rl"
+version = "0.1.0"
+description = "Reproducible SUMO-RL traffic light control experiments on a 2x2 grid"
+requires-python = ">=3.11"
+dependencies = [
+  "gymnasium",
+  "numpy",
+  "pettingzoo",
+  "PyYAML",
+  "sumo-rl",
+  "torch",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,25 @@
+{
+  "episode_seconds": 60,
+  "generated_at": "2026-03-16T20:49:49.200713+00:00",
+  "intensities": [
+    "low"
+  ],
+  "routes": [
+    {
+      "base_origin_vehs_per_hour": 231.00000000000003,
+      "flow_count": 48,
+      "intensity": "low",
+      "path": "routes/train/low/seed_000.rou.xml",
+      "seed": 0,
+      "split": "train"
+    },
+    {
+      "base_origin_vehs_per_hour": 231.00000000000003,
+      "flow_count": 48,
+      "intensity": "low",
+      "path": "routes/test/low/seed_100.rou.xml",
+      "seed": 100,
+      "split": "test"
+    }
+  ]
+}

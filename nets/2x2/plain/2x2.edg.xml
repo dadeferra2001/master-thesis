@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edges version="1.20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/edges_file.xsd">
+    <edge id="-h11" from="0" to="1" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-h12" from="1" to="2" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-h13" from="2" to="3" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-h21" from="4" to="5" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-h22" from="5" to="6" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-h23" from="6" to="7" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-v11" from="17" to="1" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-v12" from="1" to="5" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-v13" from="5" to="9" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-v21" from="18" to="2" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-v22" from="2" to="6" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="-v23" from="6" to="10" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="h11" from="1" to="0" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="h12" from="2" to="1" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="h13" from="3" to="2" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="h21" from="5" to="4" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="h22" from="6" to="5" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="h23" from="7" to="6" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="v11" from="1" to="17" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="v12" from="5" to="1" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="v13" from="9" to="5" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="v21" from="2" to="18" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="v22" from="6" to="2" priority="1" numLanes="3" speed="13.89"/>
+    <edge id="v23" from="10" to="6" priority="1" numLanes="3" speed="13.89"/>
+</edges>

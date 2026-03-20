@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tlLogics version="1.20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/tllogic_file.xsd">
+    <tlLogic id="1" type="static" programID="0" offset="0">
+        <phase duration="33" state="GGrrrrGGrrrr"/>
+        <phase duration="3"  state="yyrrrryyrrrr"/>
+        <phase duration="6"  state="rrGrrrrrGrrr"/>
+        <phase duration="3"  state="rryrrrrryrrr"/>
+        <phase duration="33" state="rrrGGrrrrGGr"/>
+        <phase duration="3"  state="rrryyrrrryyr"/>
+        <phase duration="6"  state="rrrrrGrrrrrG"/>
+        <phase duration="3"  state="rrrrryrrrrry"/>
+    </tlLogic>
+    <tlLogic id="2" type="static" programID="0" offset="0">
+        <phase duration="33" state="GGrrrrGGrrrr"/>
+        <phase duration="3"  state="yyrrrryyrrrr"/>
+        <phase duration="6"  state="rrGrrrrrGrrr"/>
+        <phase duration="3"  state="rryrrrrryrrr"/>
+        <phase duration="33" state="rrrGGrrrrGGr"/>
+        <phase duration="3"  state="rrryyrrrryyr"/>
+        <phase duration="6"  state="rrrrrGrrrrrG"/>
+        <phase duration="3"  state="rrrrryrrrrry"/>
+    </tlLogic>
+    <tlLogic id="5" type="static" programID="0" offset="0">
+        <phase duration="33" state="GGrrrrGGrrrr"/>
+        <phase duration="3"  state="yyrrrryyrrrr"/>
+        <phase duration="6"  state="rrGrrrrrGrrr"/>
+        <phase duration="3"  state="rryrrrrryrrr"/>
+        <phase duration="33" state="rrrGGrrrrGGr"/>
+        <phase duration="3"  state="rrryyrrrryyr"/>
+        <phase duration="6"  state="rrrrrGrrrrrG"/>
+        <phase duration="3"  state="rrrrryrrrrry"/>
+    </tlLogic>
+    <tlLogic id="6" type="static" programID="0" offset="0">
+        <phase duration="33" state="GGrrrrGGrrrr"/>
+        <phase duration="3"  state="yyrrrryyrrrr"/>
+        <phase duration="6"  state="rrGrrrrrGrrr"/>
+        <phase duration="3"  state="rryrrrrryrrr"/>
+        <phase duration="33" state="rrrGGrrrrGGr"/>
+        <phase duration="3"  state="rrryyrrrryyr"/>
+        <phase duration="6"  state="rrrrrGrrrrrG"/>
+        <phase duration="3"  state="rrrrryrrrrry"/>
+    </tlLogic>
+
+    <connection from="-h11" to="-v12" fromLane="0" toLane="0" tl="1" linkIndex="9"/>
+    <connection from="-h11" to="-h12" fromLane="1" toLane="1" tl="1" linkIndex="10"/>
+    <connection from="-h11" to="v11" fromLane="2" toLane="2" tl="1" linkIndex="11"/>
+    <connection from="-h12" to="-v22" fromLane="0" toLane="0" tl="2" linkIndex="9"/>
+    <connection from="-h12" to="-h13" fromLane="1" toLane="1" tl="2" linkIndex="10"/>
+    <connection from="-h12" to="v21" fromLane="2" toLane="2" tl="2" linkIndex="11"/>
+    <connection from="-h21" to="-v13" fromLane="0" toLane="0" tl="5" linkIndex="9"/>
+    <connection from="-h21" to="-h22" fromLane="1" toLane="1" tl="5" linkIndex="10"/>
+    <connection from="-h21" to="v12" fromLane="2" toLane="2" tl="5" linkIndex="11"/>
+    <connection from="-h22" to="-v23" fromLane="0" toLane="0" tl="6" linkIndex="9"/>
+    <connection from="-h22" to="-h23" fromLane="1" toLane="1" tl="6" linkIndex="10"/>
+    <connection from="-h22" to="v22" fromLane="2" toLane="2" tl="6" linkIndex="11"/>
+    <connection from="-v11" to="h11" fromLane="0" toLane="0" tl="1" linkIndex="0"/>
+    <connection from="-v11" to="-v12" fromLane="1" toLane="1" tl="1" linkIndex="1"/>
+    <connection from="-v11" to="-h12" fromLane="2" toLane="2" tl="1" linkIndex="2"/>
+    <connection from="-v12" to="h21" fromLane="0" toLane="0" tl="5" linkIndex="0"/>
+    <connection from="-v12" to="-v13" fromLane="1" toLane="1" tl="5" linkIndex="1"/>
+    <connection from="-v12" to="-h22" fromLane="2" toLane="2" tl="5" linkIndex="2"/>
+    <connection from="-v21" to="h12" fromLane="0" toLane="0" tl="2" linkIndex="0"/>
+    <connection from="-v21" to="-v22" fromLane="1" toLane="1" tl="2" linkIndex="1"/>
+    <connection from="-v21" to="-h13" fromLane="2" toLane="2" tl="2" linkIndex="2"/>
+    <connection from="-v22" to="h22" fromLane="0" toLane="0" tl="6" linkIndex="0"/>
+    <connection from="-v22" to="-v23" fromLane="1" toLane="1" tl="6" linkIndex="1"/>
+    <connection from="-v22" to="-h23" fromLane="2" toLane="2" tl="6" linkIndex="2"/>
+    <connection from="h12" to="v11" fromLane="0" toLane="0" tl="1" linkIndex="3"/>
+    <connection from="h12" to="h11" fromLane="1" toLane="1" tl="1" linkIndex="4"/>
+    <connection from="h12" to="-v12" fromLane="2" toLane="2" tl="1" linkIndex="5"/>
+    <connection from="h13" to="v21" fromLane="0" toLane="0" tl="2" linkIndex="3"/>
+    <connection from="h13" to="h12" fromLane="1" toLane="1" tl="2" linkIndex="4"/>
+    <connection from="h13" to="-v22" fromLane="2" toLane="2" tl="2" linkIndex="5"/>
+    <connection from="h22" to="v12" fromLane="0" toLane="0" tl="5" linkIndex="3"/>
+    <connection from="h22" to="h21" fromLane="1" toLane="1" tl="5" linkIndex="4"/>
+    <connection from="h22" to="-v13" fromLane="2" toLane="2" tl="5" linkIndex="5"/>
+    <connection from="h23" to="v22" fromLane="0" toLane="0" tl="6" linkIndex="3"/>
+    <connection from="h23" to="h22" fromLane="1" toLane="1" tl="6" linkIndex="4"/>
+    <connection from="h23" to="-v23" fromLane="2" toLane="2" tl="6" linkIndex="5"/>
+    <connection from="v12" to="-h12" fromLane="0" toLane="0" tl="1" linkIndex="6"/>
+    <connection from="v12" to="v11" fromLane="1" toLane="1" tl="1" linkIndex="7"/>
+    <connection from="v12" to="h11" fromLane="2" toLane="2" tl="1" linkIndex="8"/>
+    <connection from="v13" to="-h22" fromLane="0" toLane="0" tl="5" linkIndex="6"/>
+    <connection from="v13" to="v12" fromLane="1" toLane="1" tl="5" linkIndex="7"/>
+    <connection from="v13" to="h21" fromLane="2" toLane="2" tl="5" linkIndex="8"/>
+    <connection from="v22" to="-h13" fromLane="0" toLane="0" tl="2" linkIndex="6"/>
+    <connection from="v22" to="v21" fromLane="1" toLane="1" tl="2" linkIndex="7"/>
+    <connection from="v22" to="h12" fromLane="2" toLane="2" tl="2" linkIndex="8"/>
+    <connection from="v23" to="-h23" fromLane="0" toLane="0" tl="6" linkIndex="6"/>
+    <connection from="v23" to="v22" fromLane="1" toLane="1" tl="6" linkIndex="7"/>
+    <connection from="v23" to="h22" fromLane="2" toLane="2" tl="6" linkIndex="8"/>
+</tlLogics>

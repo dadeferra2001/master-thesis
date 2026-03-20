@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connections version="1.20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/connections_file.xsd">
+    <connection from="-h11" to="-v12" fromLane="0" toLane="0"/>
+    <connection from="-h11" to="-h12" fromLane="1" toLane="1"/>
+    <connection from="-h11" to="v11" fromLane="2" toLane="2"/>
+
+    <connection from="-h12" to="-v22" fromLane="0" toLane="0"/>
+    <connection from="-h12" to="-h13" fromLane="1" toLane="1"/>
+    <connection from="-h12" to="v21" fromLane="2" toLane="2"/>
+
+    <connection from="-h13"/>
+
+    <connection from="-h21" to="-v13" fromLane="0" toLane="0"/>
+    <connection from="-h21" to="-h22" fromLane="1" toLane="1"/>
+    <connection from="-h21" to="v12" fromLane="2" toLane="2"/>
+
+    <connection from="-h22" to="-v23" fromLane="0" toLane="0"/>
+    <connection from="-h22" to="-h23" fromLane="1" toLane="1"/>
+    <connection from="-h22" to="v22" fromLane="2" toLane="2"/>
+
+    <connection from="-h23"/>
+
+    <connection from="-v11" to="h11" fromLane="0" toLane="0"/>
+    <connection from="-v11" to="-v12" fromLane="1" toLane="1"/>
+    <connection from="-v11" to="-h12" fromLane="2" toLane="2"/>
+
+    <connection from="-v12" to="h21" fromLane="0" toLane="0"/>
+    <connection from="-v12" to="-v13" fromLane="1" toLane="1"/>
+    <connection from="-v12" to="-h22" fromLane="2" toLane="2"/>
+
+    <connection from="-v13"/>
+
+    <connection from="-v21" to="h12" fromLane="0" toLane="0"/>
+    <connection from="-v21" to="-v22" fromLane="1" toLane="1"/>
+    <connection from="-v21" to="-h13" fromLane="2" toLane="2"/>
+
+    <connection from="-v22" to="h22" fromLane="0" toLane="0"/>
+    <connection from="-v22" to="-v23" fromLane="1" toLane="1"/>
+    <connection from="-v22" to="-h23" fromLane="2" toLane="2"/>
+
+    <connection from="-v23"/>
+
+    <connection from="h11"/>
+
+    <connection from="h12" to="v11" fromLane="0" toLane="0"/>
+    <connection from="h12" to="h11" fromLane="1" toLane="1"/>
+    <connection from="h12" to="-v12" fromLane="2" toLane="2"/>
+
+    <connection from="h13" to="v21" fromLane="0" toLane="0"/>
+    <connection from="h13" to="h12" fromLane="1" toLane="1"/>
+    <connection from="h13" to="-v22" fromLane="2" toLane="2"/>
+
+    <connection from="h21"/>
+
+    <connection from="h22" to="v12" fromLane="0" toLane="0"/>
+    <connection from="h22" to="h21" fromLane="1" toLane="1"/>
+    <connection from="h22" to="-v13" fromLane="2" toLane="2"/>
+
+    <connection from="h23" to="v22" fromLane="0" toLane="0"/>
+    <connection from="h23" to="h22" fromLane="1" toLane="1"/>
+    <connection from="h23" to="-v23" fromLane="2" toLane="2"/>
+
+    <connection from="v11"/>
+
+    <connection from="v12" to="-h12" fromLane="0" toLane="0"/>
+    <connection from="v12" to="v11" fromLane="1" toLane="1"/>
+    <connection from="v12" to="h11" fromLane="2" toLane="2"/>
+
+    <connection from="v13" to="-h22" fromLane="0" toLane="0"/>
+    <connection from="v13" to="v12" fromLane="1" toLane="1"/>
+    <connection from="v13" to="h21" fromLane="2" toLane="2"/>
+
+    <connection from="v21"/>
+
+    <connection from="v22" to="-h13" fromLane="0" toLane="0"/>
+    <connection from="v22" to="v21" fromLane="1" toLane="1"/>
+    <connection from="v22" to="h12" fromLane="2" toLane="2"/>
+
+    <connection from="v23" to="-h23" fromLane="0" toLane="0"/>
+    <connection from="v23" to="v22" fromLane="1" toLane="1"/>
+    <connection from="v23" to="h22" fromLane="2" toLane="2"/>
+</connections>
