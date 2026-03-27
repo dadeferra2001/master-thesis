@@ -79,6 +79,7 @@ class ProgressReporter:
         seed: int,
         total_timesteps: int,
         total_updates: int,
+        variant: str | None = None,
     ) -> None:
         self.algo = algo
         self.intensity = intensity
@@ -88,7 +89,7 @@ class ProgressReporter:
         self.start_time = time.time()
         self.episode_returns: deque[float] = deque(maxlen=10)
         self.episode_count = 0
-        self.tensorboard_dir = tensorboard_run_dir(algo, intensity, seed)
+        self.tensorboard_dir = tensorboard_run_dir(algo, intensity, seed, variant=variant)
         self.writer = SummaryWriter(log_dir=str(self.tensorboard_dir))
         print(f"[{self.algo}][{self.intensity}][seed={self.seed}] tensorboard {self.tensorboard_dir}", flush=True)
 

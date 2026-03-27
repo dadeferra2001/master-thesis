@@ -14,6 +14,7 @@ import torch
 import torch.optim as optim
 
 from .controllers import SharedController, append_agent_id_features, stack_local_observations
+from .config import experiment_variant
 from .envs import ParallelGridEnv
 from .metrics import summarize_episode
 from .models import LocalActorCritic
@@ -40,6 +41,7 @@ def train(
     rng = np.random.default_rng(seed)
     device = get_device(train_cfg.get("device", "auto"))
     use_agent_id = bool(train_cfg.get("agent_id", True))
+    variant = experiment_variant(config)
 
     route_spec = sample_route(route_specs, rng)
     env = ParallelGridEnv(config, route_spec["path"], seed=seed)
@@ -66,8 +68,8 @@ def train(
 
     episode_return = 0.0
     global_step = 0
-    log_path = train_log_path("shared_ppo", intensity, seed)
-    progress = ProgressReporter("shared_ppo", intensity, seed, total_timesteps, num_updates)
+    log_path = train_log_path("shared_ppo", intensity, seed, variant=variant)
+    progress = ProgressReporter("shared_ppo", intensity, seed, total_timesteps, num_updates, variant=variant)
 
     def obs_to_array(current_obs_dict: dict[str, np.ndarray]) -> np.ndarray:
         batch = stack_local_observations(current_obs_dict, TLS_IDS)
@@ -219,11 +221,12 @@ def train(
         )
 
         if update % int(train_cfg["save_every_updates"]) == 0 or update == num_updates:
-            checkpoint_path = checkpoint_dir("shared_ppo", intensity, seed) / f"update_{update:04d}.pt"
+            checkpoint_path = checkpoint_dir("shared_ppo", intensity, seed, variant=variant) / f"update_{update:04d}.pt"
             save_checkpoint(
                 checkpoint_path,
                 {
                     "algo": "shared_ppo",
+                    "variant": variant,
                     "agent_order": list(TLS_IDS),
                     "obs_dim": obs_dim,
                     "action_dim": action_dim,
@@ -240,11 +243,12 @@ def train(
             )
 
     env.close()
-    final_path = checkpoint_dir("shared_ppo", intensity, seed) / "final.pt"
+    final_path = checkpoint_dir("shared_ppo", intensity, seed, variant=variant) / "final.pt"
     save_checkpoint(
         final_path,
         {
             "algo": "shared_ppo",
+            "variant": variant,
             "agent_order": list(TLS_IDS),
             "obs_dim": obs_dim,
             "action_dim": action_dim,

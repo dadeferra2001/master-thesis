@@ -92,19 +92,28 @@ def route_specs_for_split(
     return sorted(matches, key=lambda item: (item["intensity"], item["seed"]))
 
 
-def checkpoint_dir(algo: str, intensity: str, seed: int) -> Path:
-    return ensure_dir(project_root() / "results" / "checkpoints" / algo / intensity / f"seed_{seed}")
+def _results_root(*parts: str | Path, variant: str | None = None) -> Path:
+    root = project_root() / "results"
+    for part in parts:
+        root /= Path(part)
+    if variant:
+        root /= variant
+    return root
 
 
-def train_log_path(algo: str, intensity: str, seed: int) -> Path:
-    root = ensure_dir(project_root() / "results" / "train_logs" / algo / intensity)
+def checkpoint_dir(algo: str, intensity: str, seed: int, variant: str | None = None) -> Path:
+    return ensure_dir(_results_root("checkpoints", algo, variant=variant) / intensity / f"seed_{seed}")
+
+
+def train_log_path(algo: str, intensity: str, seed: int, variant: str | None = None) -> Path:
+    root = ensure_dir(_results_root("train_logs", algo, variant=variant) / intensity)
     return root / f"seed_{seed}.jsonl"
 
 
-def eval_dir(algo: str, split: str, intensity: str, route_seed: int) -> Path:
-    return ensure_dir(project_root() / "results" / "eval" / algo / split / intensity / f"route_{route_seed:03d}")
+def eval_dir(algo: str, split: str, intensity: str, route_seed: int, variant: str | None = None) -> Path:
+    return ensure_dir(_results_root("eval", algo, variant=variant) / split / intensity / f"route_{route_seed:03d}")
 
 
-def tensorboard_run_dir(algo: str, intensity: str, seed: int) -> Path:
+def tensorboard_run_dir(algo: str, intensity: str, seed: int, variant: str | None = None) -> Path:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    return ensure_dir(project_root() / "results" / "tensorboard" / algo / intensity / f"seed_{seed}" / timestamp)
+    return ensure_dir(_results_root("tensorboard", algo, variant=variant) / intensity / f"seed_{seed}" / timestamp)

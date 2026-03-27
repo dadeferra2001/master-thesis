@@ -1,30 +1,81 @@
 from __future__ import annotations
 
+import csv
 import copy
 import json
 import tempfile
 import unittest
 from pathlib import Path
 import sys
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from traffic_rl.algo_shared import train as train_shared
 from traffic_rl.comparison import write_comparison_outputs
-from traffic_rl.config import load_experiment_config
+from traffic_rl.config import load_experiment_config, set_pedestrians_enabled
 from traffic_rl.envs import CentralizedGridEnv, ParallelGridEnv, configure_sumo_backend
+from traffic_rl.metrics import summarize_episode
+from traffic_rl.pedestrians import make_pedestrian_reward_fn
 from traffic_rl.routes import generate_route_manifest
+from sumo_rl.environment.traffic_signal import TrafficSignal
+
+
+class _FakeEdgeAPI:
+    def __init__(self, edge_people: dict[str, list[str]]) -> None:
+        self.edge_people = edge_people
+
+    def getLastStepPersonIDs(self, edge_id: str) -> list[str]:
+        return list(self.edge_people.get(edge_id, []))
+
+
+class _FakePersonAPI:
+    def __init__(self, waiting_times: dict[str, float]) -> None:
+        self.waiting_times = waiting_times
+
+    def getWaitingTime(self, person_id: str) -> float:
+        return float(self.waiting_times.get(person_id, 0.0))
+
+
+class _FakeTrafficLightAPI:
+    def __init__(self, state: str) -> None:
+        self.state = state
+
+    def getControlledLinks(self, tls_id: str) -> list[list[tuple[str, str, str]]]:
+        return [
+            [(f":{tls_id}_w0_0", f":{tls_id}_c0_0", "s")],
+            [(f":{tls_id}_w1_0", f":{tls_id}_c1_0", "s")],
+        ]
+
+    def getRedYellowGreenState(self, tls_id: str) -> str:
+        return self.state
+
+
+class _FakeSumo:
+    def __init__(self, state: str, edge_people: dict[str, list[str]], waiting_times: dict[str, float]) -> None:
+        self.edge = _FakeEdgeAPI(edge_people)
+        self.person = _FakePersonAPI(waiting_times)
+        self.trafficlight = _FakeTrafficLightAPI(state)
+
+
+class _FakeTrafficSignal:
+    def __init__(self, state: str, edge_people: dict[str, list[str]], waiting_times: dict[str, float]) -> None:
+        self.id = "1"
+        self.delta_time = 5
+        self.sumo = _FakeSumo(state, edge_people, waiting_times)
 
 
 class PipelineSmokeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        cls.tmpdir = tempfile.TemporaryDirectory()
+        cls.tmp_root = Path(cls.tmpdir.name)
         cls.config = load_experiment_config("configs/env.yaml")
         cls.config["scenario"]["episode_seconds"] = 60
         cls.config["route_generation"]["episode_seconds"] = 60
         cls.config["route_generation"]["num_windows"] = 2
-        cls.manifest_path = "routes/manifests/test_manifest.json"
+        cls.manifest_path = cls.tmp_root / "test_manifest.json"
         cls.manifest = generate_route_manifest(
             config=cls.config,
             train_seeds=[0],
@@ -32,10 +83,30 @@ class PipelineSmokeTest(unittest.TestCase):
             intensities=["low"],
             output_path=cls.manifest_path,
         )
+        cls.ped_config = copy.deepcopy(cls.config)
+        set_pedestrians_enabled(cls.ped_config, True)
+        cls.ped_manifest_path = cls.tmp_root / "test_manifest_peds.json"
+        cls.ped_manifest = generate_route_manifest(
+            config=cls.ped_config,
+            train_seeds=[0],
+            test_seeds=[100],
+            intensities=["low"],
+            output_path=cls.ped_manifest_path,
+        )
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.tmpdir.cleanup()
 
     def test_route_manifest_created(self) -> None:
-        self.assertTrue((ROOT / self.manifest_path).exists())
+        self.assertTrue(self.manifest_path.exists())
         self.assertEqual(len(self.manifest["routes"]), 2)
+
+    def test_pedestrian_route_manifest_created(self) -> None:
+        self.assertTrue(self.ped_manifest_path.exists())
+        self.assertEqual(len(self.ped_manifest["routes"]), 2)
+        self.assertTrue(all(route["with_pedestrians"] for route in self.ped_manifest["routes"]))
+        self.assertTrue(all("routes_peds/" in route["path"] for route in self.ped_manifest["routes"]))
 
     def test_centralized_env_step(self) -> None:
         route_file = self.manifest["routes"][0]["path"]
@@ -57,6 +128,50 @@ class PipelineSmokeTest(unittest.TestCase):
         self.assertEqual(set(next_obs.keys()), {"1", "2", "5", "6"})
         self.assertEqual(set(rewards.keys()), {"1", "2", "5", "6"})
         env.close()
+
+    def test_pedestrian_parallel_env_step(self) -> None:
+        route_file = self.ped_manifest["routes"][0]["path"]
+        env = ParallelGridEnv(self.ped_config, route_file, seed=0)
+        obs, _ = env.reset(seed=0)
+        self.assertEqual(set(obs.keys()), {"1", "2", "5", "6"})
+        self.assertGreater(env.observation_dim, 0)
+        next_obs, rewards, _, _, _ = env.step({agent: 0 for agent in ("1", "2", "5", "6")})
+        self.assertEqual(set(next_obs.keys()), {"1", "2", "5", "6"})
+        self.assertEqual(set(rewards.keys()), {"1", "2", "5", "6"})
+        summary = summarize_episode(env.history)
+        self.assertIn("mean_average_pedestrian_waiting_time", summary)
+        self.assertIn("mean_pedestrian_queue_length", summary)
+        self.assertIn("mean_max_pedestrian_waiting_time", summary)
+        self.assertIn("max_pedestrian_waiting_time", summary)
+        self.assertIn("pedestrian_total_waiting_time", env.history[-1])
+        self.assertIn("pedestrian_total_queue_length", env.history[-1])
+        self.assertIn("pedestrian_max_waiting_time", env.history[-1])
+        env.close()
+
+    def test_pedestrian_reward_adds_fairness_penalties(self) -> None:
+        config = load_experiment_config("configs/env.yaml")
+        set_pedestrians_enabled(config, True)
+        config["scenario"]["pedestrians"]["reward_weight"] = 0.0
+        config["scenario"]["pedestrians"]["fairness_wait_threshold"] = 15.0
+        config["scenario"]["pedestrians"]["max_wait_penalty"] = 2.0
+        config["scenario"]["pedestrians"]["starvation_penalty"] = 3.0
+
+        ts = _FakeTrafficSignal(
+            state="rr",
+            edge_people={":1_w0": ["p0"], ":1_w1": []},
+            waiting_times={"p0": 20.0},
+        )
+
+        with patch.dict(TrafficSignal.reward_fns, {"diff-waiting-time": lambda _ts: 0.0}, clear=False):
+            reward_fn = make_pedestrian_reward_fn(config)
+            rewards = [reward_fn(ts) for _ in range(4)]
+
+            self.assertLess(rewards[0], 0.0)
+            self.assertLess(rewards[-1], rewards[0])
+
+            ts.sumo.trafficlight.state = "Gr"
+            served_reward = reward_fn(ts)
+            self.assertGreater(served_reward, rewards[-1])
 
     def test_sumo_backend_switching(self) -> None:
         self.assertEqual(configure_sumo_backend(use_gui=False), "libsumo")
@@ -92,6 +207,21 @@ class PipelineSmokeTest(unittest.TestCase):
         checkpoint_path = train_shared(self.config, ppo_config, route_specs, intensity="low", seed=0)
         self.assertTrue(Path(checkpoint_path).exists())
         tb_root = ROOT / "results" / "tensorboard" / "shared_ppo" / "low" / "seed_0"
+        self.assertTrue(tb_root.exists())
+        self.assertTrue(any(path.name.startswith("events.out.tfevents") for path in tb_root.rglob("*")))
+
+    def test_shared_training_pedestrian_variant_smoke(self) -> None:
+        route_specs = [route for route in self.ped_manifest["routes"] if route["split"] == "train"]
+        ppo_config = load_experiment_config("configs/ppo_common.yaml", "configs/ppo_shared.yaml")
+        ppo_config = copy.deepcopy(ppo_config)
+        ppo_config["train"]["total_timesteps"] = 16
+        ppo_config["train"]["num_steps"] = 8
+        ppo_config["train"]["update_epochs"] = 1
+        ppo_config["train"]["num_minibatches"] = 2
+        checkpoint_path = train_shared(self.ped_config, ppo_config, route_specs, intensity="low", seed=1)
+        self.assertTrue(Path(checkpoint_path).exists())
+        self.assertIn("/peds/", checkpoint_path.as_posix())
+        tb_root = ROOT / "results" / "tensorboard" / "shared_ppo" / "peds" / "low" / "seed_1"
         self.assertTrue(tb_root.exists())
         self.assertTrue(any(path.name.startswith("events.out.tfevents") for path in tb_root.rglob("*")))
 
@@ -218,6 +348,73 @@ class PipelineSmokeTest(unittest.TestCase):
             self.assertIn('aria-label="Mean waiting time across intensities"', html)
             self.assertIn("Low", html)
             self.assertIn("High", html)
+
+    def test_comparison_report_separates_vehicle_and_pedestrian_variants(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_root = Path(tmpdir)
+            results_root = tmp_root / "results" / "eval"
+            fixtures = {
+                ("baseline", "vehicle"): 10.0,
+                ("shared_ppo", "vehicle"): 7.0,
+                ("baseline", "peds"): 14.0,
+                ("shared_ppo", "peds"): 9.0,
+            }
+            for (algorithm, variant), waiting_time in fixtures.items():
+                target = results_root / algorithm
+                if variant == "peds":
+                    target = target / "peds"
+                target = target / "test" / "medium"
+                target.mkdir(parents=True, exist_ok=True)
+                payload = {
+                    "algorithm": algorithm,
+                    "split": "test",
+                    "intensity": "medium",
+                    "variant": variant,
+                    "episodes": 3,
+                    "mean_average_waiting_time_mean": waiting_time,
+                    "mean_average_waiting_time_std": 0.5,
+                    "mean_average_pedestrian_waiting_time_mean": 12.0 if variant == "peds" else None,
+                    "mean_average_pedestrian_waiting_time_std": 0.4 if variant == "peds" else None,
+                    "mean_average_speed_mean": 5.0,
+                    "mean_average_speed_std": 0.2,
+                    "mean_travel_time_mean": 50.0,
+                    "mean_travel_time_std": 1.0,
+                    "throughput_mean": 100.0,
+                    "throughput_std": 2.0,
+                    "mean_queue_length_mean": 12.0,
+                    "mean_queue_length_std": 0.5,
+                    "mean_time_loss_mean": 20.0,
+                    "mean_time_loss_std": 1.0,
+                    "teleports_mean": 0.0,
+                    "teleports_std": 0.0,
+                }
+                with (target / "aggregate.json").open("w", encoding="utf-8") as handle:
+                    json.dump(payload, handle)
+
+            outputs = write_comparison_outputs(
+                results_root=results_root,
+                output_dir=tmp_root / "results" / "compare",
+                split="test",
+                intensities=["medium"],
+            )
+
+            html = outputs["html"].read_text(encoding="utf-8")
+            self.assertIn("Vehicle Only | Medium", html)
+            self.assertIn("Pedestrians | Medium", html)
+            self.assertIn("Pedestrian waiting time", html)
+
+            with outputs["csv"].open("r", encoding="utf-8", newline="") as handle:
+                rows = list(csv.DictReader(handle))
+            self.assertEqual({row["variant"] for row in rows}, {"vehicle", "peds"})
+            by_key = {(row["algorithm"], row["variant"]): row for row in rows}
+            self.assertAlmostEqual(
+                float(by_key[("shared_ppo", "vehicle")]["mean_average_waiting_time_improvement_pct"]),
+                30.0,
+            )
+            self.assertAlmostEqual(
+                float(by_key[("shared_ppo", "peds")]["mean_average_waiting_time_improvement_pct"]),
+                (14.0 - 9.0) / 14.0 * 100.0,
+            )
 
 
 if __name__ == "__main__":

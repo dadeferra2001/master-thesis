@@ -27,8 +27,13 @@ configs/
   experiment_matrix.yaml
 nets/2x2/
   2x2.net.xml
+  2x2_peds.net.xml
+routes_peds/
+  train/
+  test/
 scripts/
   generate_routes.py
+  build_2x2_network.py
   run_baseline.py
   train_centralized_ppo.py
   train_shared_ppo.py
@@ -46,6 +51,12 @@ src/traffic_rl/
 ```
 
 ## Recommended workflow
+
+Build the SUMO network assets:
+
+```bash
+python scripts/build_2x2_network.py
+```
 
 Generate reproducible route files:
 
@@ -65,6 +76,18 @@ Render the SUMO UI for the baseline:
 python scripts/run_baseline.py --split test --intensity medium --gui
 ```
 
+Pedestrian mode uses a separate network, route corpus, manifest, and result namespace. Generate the pedestrian routes with:
+
+```bash
+python scripts/generate_routes.py --with-pedestrians
+```
+
+Run the pedestrian baseline in the SUMO GUI:
+
+```bash
+python scripts/run_baseline.py --with-pedestrians --split test --intensity medium --gui
+```
+
 Train one controller:
 
 ```bash
@@ -73,6 +96,31 @@ python scripts/train_centralized_ppo.py --intensity medium --seed 0
 python scripts/train_independent_ppo.py --intensity medium --seed 0
 python scripts/train_mappo.py --intensity medium --seed 0
 ```
+
+Train with pedestrians by adding `--with-pedestrians`:
+
+```bash
+python scripts/train_shared_ppo.py --intensity medium --seed 0 --with-pedestrians
+python scripts/train_centralized_ppo.py --intensity medium --seed 0 --with-pedestrians
+python scripts/train_independent_ppo.py --intensity medium --seed 0 --with-pedestrians
+python scripts/train_mappo.py --intensity medium --seed 0 --with-pedestrians
+```
+
+Pedestrian mode now uses a stronger pedestrian-aware reward by default. In `configs/env.yaml`, the pedestrian-only knobs are:
+
+- `scenario.pedestrians.reward_weight`
+- `scenario.pedestrians.fairness_wait_threshold`
+- `scenario.pedestrians.max_wait_penalty`
+- `scenario.pedestrians.starvation_penalty`
+
+The default pedestrian reward combines:
+
+- the existing vehicle diff-waiting-time reward
+- a weighted pedestrian diff-waiting-time term
+- a penalty when any pedestrian wait exceeds the fairness threshold
+- a penalty when queued pedestrians keep getting skipped by the active phase
+
+If pedestrian waiting is still too high after retraining, increase the pedestrian penalties before changing the vehicle-side setup.
 
 Evaluate a checkpoint:
 
@@ -91,6 +139,16 @@ python scripts/eval_policy.py \
   --split test \
   --intensity medium \
   --gui
+```
+
+Evaluate a pedestrian-trained checkpoint with the pedestrian manifest and env mode enabled:
+
+```bash
+python scripts/eval_policy.py \
+  --checkpoint results/checkpoints/shared_ppo/peds/medium/seed_0/final.pt \
+  --split test \
+  --intensity medium \
+  --with-pedestrians
 ```
 
 Aggregate evaluation tables:
@@ -139,6 +197,15 @@ Each training run writes a separate TensorBoard directory under:
 results/tensorboard/<algorithm>/<intensity>/seed_<seed>/<timestamp>/
 ```
 
+Pedestrian runs use the `peds` namespace:
+
+```text
+results/checkpoints/<algorithm>/peds/<intensity>/seed_<seed>/
+results/train_logs/<algorithm>/peds/<intensity>/seed_<seed>.jsonl
+results/tensorboard/<algorithm>/peds/<intensity>/seed_<seed>/<timestamp>/
+results/eval/<algorithm>/peds/<split>/<intensity>/
+```
+
 Logged scalars include:
 
 - `train/learning_rate`
@@ -151,6 +218,7 @@ Logged scalars include:
 - `losses/clipfrac`
 - `losses/explained_variance`
 - episode traffic metrics such as waiting time, speed, throughput, queue length, time loss, and teleports
+- when pedestrians are enabled, pedestrian waiting, pedestrian max-wait, and pedestrian queue metrics are also logged under `episode/*`
 
 ## Smoke-test overrides
 
@@ -171,4 +239,8 @@ python scripts/train_shared_ppo.py \
 - Generated test routes are deterministic by seed and can be reused across all algorithms for fair comparison.
 - Training logs are written as JSONL under `results/train_logs/`.
 - Evaluation outputs are stored under `results/eval/<algorithm>/<split>/<intensity>/`.
+- Pedestrian route generation writes to `routes_peds/` and uses `routes/manifests/routes_manifest_peds.json`.
+- Pedestrian training and evaluation outputs are stored under `results/.../<algorithm>/peds/...` and do not overwrite vehicle-only runs.
+- `aggregate_results.py` and `compare_results.py` are variant-aware. Use `--variant peds` or `--variant vehicle` if you want a filtered report.
+- Pedestrian checkpoints trained before the fairness reward update should be retrained if you want the policy itself to optimize pedestrian waiting correctly.
 - Training prints one progress line per PPO update with percent complete, steps, recent return, SPS, and ETA.

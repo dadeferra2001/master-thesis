@@ -15,7 +15,7 @@ bootstrap_sumo(prefer_libsumo=True)
 import torch
 
 from traffic_rl import algo_centralized, algo_independent, algo_mappo, algo_shared
-from traffic_rl.config import load_experiment_config
+from traffic_rl.config import default_manifest_path, experiment_variant, load_experiment_config, set_pedestrians_enabled
 from traffic_rl.evaluation import run_policy_episode
 from traffic_rl.reporting import aggregate_episode_summaries
 from traffic_rl.utils import eval_dir, get_device, load_manifest, route_specs_for_split, write_csv, write_json
@@ -25,12 +25,13 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate a trained policy checkpoint.")
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--env-config", default="configs/env.yaml")
-    parser.add_argument("--manifest", default="routes/manifests/routes_manifest.json")
+    parser.add_argument("--manifest")
     parser.add_argument("--split", default="test", choices=["train", "test"])
     parser.add_argument("--intensity", choices=["low", "medium", "high"])
     parser.add_argument("--device", default="auto")
     parser.add_argument("--stochastic", action="store_true")
     parser.add_argument("--gui", action="store_true", help="Render the SUMO GUI during evaluation.")
+    parser.add_argument("--with-pedestrians", action="store_true")
     return parser.parse_args()
 
 
@@ -55,13 +56,16 @@ def main() -> None:
     device = get_device(args.device)
     algo, controller = load_controller(args.checkpoint, device)
     config = load_experiment_config(args.env_config)
-    manifest = load_manifest(args.manifest)
+    if args.with_pedestrians:
+        set_pedestrians_enabled(config, True)
+    variant = experiment_variant(config)
+    manifest = load_manifest(args.manifest or default_manifest_path(config))
     intensities = [args.intensity] if args.intensity else manifest["intensities"]
 
     for intensity in intensities:
         rows = []
         for route_spec in route_specs_for_split(manifest, split=args.split, intensity=intensity):
-            run_dir = eval_dir(algo, args.split, intensity, int(route_spec["seed"]))
+            run_dir = eval_dir(algo, args.split, intensity, int(route_spec["seed"]), variant=variant)
             summary = run_policy_episode(
                 algo=algo,
                 controller=controller,
@@ -69,14 +73,18 @@ def main() -> None:
                 route_file=route_spec["path"],
                 route_seed=int(route_spec["seed"]),
                 output_dir=run_dir,
+                variant=variant or "vehicle",
                 deterministic=not args.stochastic,
                 use_gui=args.gui,
             )
             summary["intensity"] = intensity
             rows.append(summary)
         aggregate = aggregate_episode_summaries(rows)
-        aggregate.update({"algorithm": algo, "split": args.split, "intensity": intensity})
-        output_root = ROOT / "results" / "eval" / algo / args.split / intensity
+        aggregate.update({"algorithm": algo, "split": args.split, "intensity": intensity, "variant": variant or "vehicle"})
+        output_root = ROOT / "results" / "eval" / algo
+        if variant:
+            output_root /= variant
+        output_root = output_root / args.split / intensity
         write_csv(output_root / "episodes.csv", rows)
         write_json(output_root / "aggregate.json", aggregate)
         print(output_root / "aggregate.json")

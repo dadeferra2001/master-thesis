@@ -17,6 +17,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", default="results/compare")
     parser.add_argument("--split", default="test", choices=["train", "test"])
     parser.add_argument("--intensity", action="append", choices=["low", "medium", "high"])
+    parser.add_argument("--variant", action="append", choices=["vehicle", "peds"])
     parser.add_argument(
         "--algorithm",
         action="append",
@@ -42,6 +43,7 @@ def main() -> None:
         output_dir=args.output_dir,
         split=args.split,
         intensities=args.intensity,
+        variants=args.variant,
         algorithms=args.algorithm,
         metric_keys=args.metric,
         baseline_algo=args.baseline,

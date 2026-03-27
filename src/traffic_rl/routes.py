@@ -8,7 +8,16 @@ from typing import Iterable
 
 import numpy as np
 
-from .config import ensure_dir, resolve_path, utc_timestamp, write_json
+from .config import (
+    default_manifest_path,
+    default_routes_root,
+    ensure_dir,
+    pedestrian_route_generation_config,
+    pedestrians_enabled,
+    resolve_path,
+    utc_timestamp,
+    write_json,
+)
 from .scenario import ORIGINS, turn_destinations
 
 
@@ -29,6 +38,8 @@ def generate_route_file(
     config: dict,
 ) -> dict:
     route_cfg = config["route_generation"]
+    ped_cfg = pedestrian_route_generation_config(config)
+    with_pedestrians = pedestrians_enabled(config)
     rng = np.random.default_rng(seed)
     output_path = resolve_path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -42,9 +53,14 @@ def generate_route_file(
     min_flow_rate = route_cfg["min_flow_vehs_per_hour"]
     profile = route_cfg["window_profile"]
     lognormal_sigma = route_cfg["lognormal_sigma"]
+    ped_base_rate = ped_cfg["base_origin_peds_per_hour"] * ped_cfg["intensity_scale"][intensity]
+    ped_min_flow_rate = ped_cfg["min_flow_peds_per_hour"]
+    ped_profile = ped_cfg["window_profile"]
+    ped_lognormal_sigma = ped_cfg["lognormal_sigma"]
 
     root = ET.Element("routes")
     flow_count = 0
+    person_flow_count = 0
     for window_idx, (begin, end) in enumerate(
         _window_bounds(route_cfg["episode_seconds"], route_cfg["num_windows"])
     ):
@@ -67,6 +83,25 @@ def generate_route_file(
                 flow.set("departLane", "best")
                 flow_count += 1
 
+            if not with_pedestrians:
+                continue
+
+            ped_origin_rate = ped_base_rate * ped_profile[window_idx]
+            ped_origin_rate *= float(rng.lognormal(mean=0.0, sigma=ped_lognormal_sigma))
+            ped_turn_shares = rng.dirichlet(alpha)
+            for turn_idx, turn_name in enumerate(("straight", "left", "right")):
+                ped_flow_rate = max(ped_min_flow_rate, ped_origin_rate * float(ped_turn_shares[turn_idx]))
+                person_flow = ET.SubElement(root, "personFlow")
+                person_flow.set("id", f"ped_{origin.name}_{turn_name}_w{window_idx}")
+                person_flow.set("begin", str(begin))
+                person_flow.set("end", str(end))
+                person_flow.set("personsPerHour", str(int(round(ped_flow_rate))))
+                person_flow.set("departPos", "base")
+                person_trip = ET.SubElement(person_flow, "personTrip")
+                person_trip.set("from", origin.edge)
+                person_trip.set("to", destinations[turn_name])
+                person_flow_count += 1
+
     tree = ET.ElementTree(root)
     ET.indent(tree, space="    ")
     tree.write(output_path, encoding="utf-8", xml_declaration=False)
@@ -76,7 +111,9 @@ def generate_route_file(
         "intensity": intensity,
         "seed": seed,
         "flow_count": flow_count,
+        "person_flow_count": person_flow_count,
         "base_origin_vehs_per_hour": base_origin_rate,
+        "with_pedestrians": with_pedestrians,
     }
 
 
@@ -85,18 +122,22 @@ def generate_route_manifest(
     train_seeds: Iterable[int],
     test_seeds: Iterable[int],
     intensities: Iterable[str],
-    output_path: str | Path = "routes/manifests/routes_manifest.json",
+    output_path: str | Path | None = None,
 ) -> dict:
+    output_path = output_path or default_manifest_path(config)
+    routes_root = default_routes_root(config)
     manifest = {
         "generated_at": utc_timestamp(),
         "episode_seconds": config["route_generation"]["episode_seconds"],
         "intensities": list(intensities),
+        "variant": "peds" if pedestrians_enabled(config) else "vehicle",
+        "with_pedestrians": pedestrians_enabled(config),
         "routes": [],
     }
 
     for split, seeds in (("train", train_seeds), ("test", test_seeds)):
         for intensity in intensities:
-            output_dir = ensure_dir(Path("routes") / split / intensity)
+            output_dir = ensure_dir(routes_root / split / intensity)
             for seed in seeds:
                 route_path = output_dir / f"seed_{seed:03d}.rou.xml"
                 route_record = generate_route_file(route_path, intensity=intensity, seed=int(seed), config=config)

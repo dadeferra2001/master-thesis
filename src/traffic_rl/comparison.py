@@ -36,6 +36,7 @@ class MetricSpec:
 DEFAULT_METRICS: tuple[MetricSpec, ...] = (
     MetricSpec("mean_average_speed", "Mean speed", True, "m/s", 2),
     MetricSpec("mean_average_waiting_time", "Mean waiting time", False, "s", 2),
+    MetricSpec("mean_average_pedestrian_waiting_time", "Pedestrian waiting time", False, "s", 2),
     MetricSpec("mean_travel_time", "Mean travel time", False, "s", 2),
     MetricSpec("throughput", "Throughput", True, "veh", 1),
     MetricSpec("mean_queue_length", "Mean queue length", False, "veh", 2),
@@ -68,6 +69,18 @@ ALGORITHM_COLORS = {
 }
 
 INTENSITY_ORDER = {"low": 0, "medium": 1, "high": 2}
+VARIANT_ORDER = {"vehicle": 0, "peds": 1}
+VARIANT_LABELS = {"vehicle": "Vehicle Only", "peds": "Pedestrians"}
+
+
+def normalize_variant(value: Any, source_file: str = "") -> str:
+    variant = str(value or "").strip().lower()
+    if variant in VARIANT_ORDER:
+        return variant
+    normalized_source = source_file.replace("\\", "/")
+    if "/peds/" in normalized_source:
+        return "peds"
+    return "vehicle"
 
 
 def load_aggregate_rows(results_root: str | Path = "results/eval") -> list[dict[str, Any]]:
@@ -81,6 +94,7 @@ def load_aggregate_rows(results_root: str | Path = "results/eval") -> list[dict[
             payload["source_file"] = str(path.relative_to(repo_root))
         except ValueError:
             payload["source_file"] = str(path)
+        payload["variant"] = normalize_variant(payload.get("variant"), payload["source_file"])
         rows.append(payload)
     return rows
 
@@ -100,20 +114,24 @@ def filter_rows(
     *,
     split: str | None = None,
     intensities: Sequence[str] | None = None,
+    variants: Sequence[str] | None = None,
     algorithms: Sequence[str] | None = None,
 ) -> list[dict[str, Any]]:
     intensity_filter = set(intensities or [])
+    variant_filter = set(variants or [])
     algorithm_filter = set(algorithms or [])
     filtered = [
         row
         for row in rows
         if (split is None or row.get("split") == split)
         and (not intensity_filter or row.get("intensity") in intensity_filter)
+        and (not variant_filter or row.get("variant") in variant_filter)
         and (not algorithm_filter or row.get("algorithm") in algorithm_filter)
     ]
     return sorted(
         filtered,
         key=lambda row: (
+            VARIANT_ORDER.get(str(row.get("variant")), 99),
             INTENSITY_ORDER.get(str(row.get("intensity")), 99),
             ALGORITHM_ORDER.get(str(row.get("algorithm")), 99),
             str(row.get("algorithm")),
@@ -133,21 +151,26 @@ def build_comparison_rows(
     *,
     baseline_algo: str = "baseline",
 ) -> list[dict[str, Any]]:
-    baseline_by_intensity = {
-        str(row.get("intensity")): row for row in rows if row.get("algorithm") == baseline_algo
+    baseline_by_variant_and_intensity = {
+        (str(row.get("variant")), str(row.get("intensity"))): row
+        for row in rows
+        if row.get("algorithm") == baseline_algo
     }
     comparison_rows: list[dict[str, Any]] = []
 
     for row in rows:
+        variant = normalize_variant(row.get("variant"), str(row.get("source_file", "")))
         record: dict[str, Any] = {
             "algorithm": row.get("algorithm"),
             "algorithm_label": ALGORITHM_LABELS.get(str(row.get("algorithm")), str(row.get("algorithm"))),
             "split": row.get("split"),
+            "variant": variant,
+            "variant_label": VARIANT_LABELS.get(variant, variant),
             "intensity": row.get("intensity"),
             "episodes": row.get("episodes"),
             "source_file": row.get("source_file", ""),
         }
-        baseline = baseline_by_intensity.get(str(row.get("intensity")))
+        baseline = baseline_by_variant_and_intensity.get((variant, str(row.get("intensity"))))
 
         for spec in metric_specs:
             value = _safe_float(row.get(spec.mean_key))
@@ -207,6 +230,15 @@ def _ordered_intensities(rows: Sequence[dict[str, Any]]) -> list[str]:
     return sorted(intensities, key=lambda intensity: INTENSITY_ORDER.get(intensity, 99))
 
 
+def _ordered_variants(rows: Sequence[dict[str, Any]]) -> list[str]:
+    variants = {
+        normalize_variant(row.get("variant"), str(row.get("source_file", "")))
+        for row in rows
+        if row.get("variant") not in (None, "")
+    } or {"vehicle"}
+    return sorted(variants, key=lambda variant: VARIANT_ORDER.get(variant, 99))
+
+
 def _ordered_algorithms(rows: Sequence[dict[str, Any]]) -> list[str]:
     algorithms = {
         str(row.get("algorithm"))
@@ -220,6 +252,14 @@ def _algorithm_color(algorithm: str) -> str:
     return ALGORITHM_COLORS.get(algorithm, "#1d4ed8")
 
 
+def _available_metric_specs(rows: Sequence[dict[str, Any]], metric_specs: Sequence[MetricSpec]) -> list[MetricSpec]:
+    return [
+        spec
+        for spec in metric_specs
+        if any(row.get(spec.mean_key) not in (None, "") for row in rows)
+    ]
+
+
 def render_markdown_report(
     rows: Sequence[dict[str, Any]],
     metric_specs: Sequence[MetricSpec],
@@ -229,36 +269,34 @@ def render_markdown_report(
     if not rows:
         return "# Result Comparison\n\nNo matching evaluation aggregates were found.\n"
 
-    intensities = []
-    seen: set[str] = set()
-    for row in rows:
-        intensity = str(row["intensity"])
-        if intensity not in seen:
-            intensities.append(intensity)
-            seen.add(intensity)
-
     lines = ["# Result Comparison", ""]
-    for intensity in intensities:
-        group = [row for row in rows if row["intensity"] == intensity]
-        lines.append(f"## {intensity.title()}")
+    for variant in _ordered_variants(rows):
+        lines.append(f"## {VARIANT_LABELS.get(variant, variant)}")
         lines.append("")
-        headers = ["Algorithm"] + [f"{spec.label} ({spec.unit})" if spec.unit else spec.label for spec in metric_specs]
-        lines.append("| " + " | ".join(headers) + " |")
-        lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
-        for row in group:
-            cells = [str(row["algorithm_label"])]
-            for spec in metric_specs:
-                mean = _safe_float(row.get(spec.mean_key))
-                if mean is None:
-                    cells.append("n/a")
-                    continue
-                improvement = _format_improvement_pct(row, spec)
-                if row["algorithm"] == baseline_algo:
-                    cells.append(f"{mean:.{spec.decimals}f} (base)")
-                else:
-                    cells.append(f"{mean:.{spec.decimals}f} ({improvement})")
-            lines.append("| " + " | ".join(cells) + " |")
-        lines.append("")
+        for intensity in _ordered_intensities([row for row in rows if row["variant"] == variant]):
+            group = [row for row in rows if row["variant"] == variant and row["intensity"] == intensity]
+            group_metric_specs = _available_metric_specs(group, metric_specs)
+            lines.append(f"### {intensity.title()}")
+            lines.append("")
+            headers = ["Algorithm"] + [
+                f"{spec.label} ({spec.unit})" if spec.unit else spec.label for spec in group_metric_specs
+            ]
+            lines.append("| " + " | ".join(headers) + " |")
+            lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
+            for row in group:
+                cells = [str(row["algorithm_label"])]
+                for spec in group_metric_specs:
+                    mean = _safe_float(row.get(spec.mean_key))
+                    if mean is None:
+                        cells.append("n/a")
+                        continue
+                    improvement = _format_improvement_pct(row, spec)
+                    if row["algorithm"] == baseline_algo:
+                        cells.append(f"{mean:.{spec.decimals}f} (base)")
+                    else:
+                        cells.append(f"{mean:.{spec.decimals}f} ({improvement})")
+                lines.append("| " + " | ".join(cells) + " |")
+            lines.append("")
     lines.append("The CSV output contains the full mean/std values and baseline-relative improvements.")
     lines.append("")
     return "\n".join(lines)
@@ -504,26 +542,28 @@ def _render_overview_section(
     rows: Sequence[dict[str, Any]],
     metric_specs: Sequence[MetricSpec],
     *,
+    variant: str,
     split: str | None,
     intensities: Sequence[str],
     baseline_algo: str,
 ) -> str:
     intensity_text = ", ".join(intensity.title() for intensity in intensities)
+    active_metric_specs = _available_metric_specs(rows, metric_specs)
     trend_cards = "\n".join(
         _render_trend_chart(rows, spec, intensities)
-        for spec in metric_specs
+        for spec in active_metric_specs
     )
     return f"""
 <section class="overview-section">
   <div class="section-header">
     <h2>Overall Overview</h2>
-    <p>Split: {escape(split or 'all')} | Intensities: {escape(intensity_text)}</p>
+    <p>Variant: {escape(VARIANT_LABELS.get(variant, variant))} | Split: {escape(split or 'all')} | Intensities: {escape(intensity_text)}</p>
   </div>
   <p class="section-note">
     The heatmap summarizes average baseline-relative improvement across the selected intensities.
     The trend charts below show how each algorithm's absolute metric values move from low to high demand.
   </p>
-  {_render_summary_heatmap(rows, metric_specs, baseline_algo=baseline_algo)}
+  {_render_summary_heatmap(rows, active_metric_specs, baseline_algo=baseline_algo)}
   <div class="trend-grid">
     {trend_cards}
   </div>
@@ -554,36 +594,52 @@ def render_html_report(
 """
 
     intensities = _ordered_intensities(rows)
-
     sections: list[str] = []
-    for intensity in intensities:
-        group = [row for row in rows if row["intensity"] == intensity]
-        table_headers = "".join(
-            f"<th>{escape(spec.label)}<br><span>{escape(spec.unit or '-')}</span></th>" for spec in metric_specs
-        )
-        table_rows: list[str] = []
-        for row in group:
-            metric_cells = []
-            for spec in metric_specs:
-                metric_cells.append(
-                    "<td>"
-                    f'<div class="cell-primary">{escape(_format_mean_std(row, spec))}</div>'
-                    f'<div class="cell-secondary">{"base" if row["algorithm"] == baseline_algo else escape(_format_improvement_pct(row, spec))}</div>'
-                    "</td>"
+    overview_sections: list[str] = []
+    for variant in _ordered_variants(rows):
+        variant_rows = [row for row in rows if row["variant"] == variant]
+        variant_intensities = _ordered_intensities(variant_rows)
+        if len(variant_intensities) > 1:
+            overview_sections.append(
+                _render_overview_section(
+                    variant_rows,
+                    metric_specs,
+                    variant=variant,
+                    split=split,
+                    intensities=variant_intensities,
+                    baseline_algo=baseline_algo,
                 )
-            table_rows.append(
-                "<tr>"
-                f'<td><strong>{escape(str(row["algorithm_label"]))}</strong><br><span class="cell-secondary">{escape(str(row.get("episodes", "n/a")))} episodes</span></td>'
-                + "".join(metric_cells)
-                + "</tr>"
             )
 
-        cards = "\n".join(_render_metric_card(group, spec) for spec in metric_specs)
-        sections.append(
-            f"""
+        for intensity in variant_intensities:
+            group = [row for row in variant_rows if row["intensity"] == intensity]
+            group_metric_specs = _available_metric_specs(group, metric_specs)
+            table_headers = "".join(
+                f"<th>{escape(spec.label)}<br><span>{escape(spec.unit or '-')}</span></th>" for spec in group_metric_specs
+            )
+            table_rows: list[str] = []
+            for row in group:
+                metric_cells = []
+                for spec in group_metric_specs:
+                    metric_cells.append(
+                        "<td>"
+                        f'<div class="cell-primary">{escape(_format_mean_std(row, spec))}</div>'
+                        f'<div class="cell-secondary">{"base" if row["algorithm"] == baseline_algo else escape(_format_improvement_pct(row, spec))}</div>'
+                        "</td>"
+                    )
+                table_rows.append(
+                    "<tr>"
+                    f'<td><strong>{escape(str(row["algorithm_label"]))}</strong><br><span class="cell-secondary">{escape(str(row.get("episodes", "n/a")))} episodes</span></td>'
+                    + "".join(metric_cells)
+                    + "</tr>"
+                )
+
+            cards = "\n".join(_render_metric_card(group, spec) for spec in group_metric_specs)
+            sections.append(
+                f"""
 <section class="intensity-section">
   <div class="section-header">
-    <h2>{escape(intensity.title())}</h2>
+    <h2>{escape(VARIANT_LABELS.get(variant, variant))} | {escape(intensity.title())}</h2>
     <p>Split: {escape(split or 'all')} | Baseline: {escape(ALGORITHM_LABELS.get(baseline_algo, baseline_algo))}</p>
   </div>
   <div class="table-wrap">
@@ -604,17 +660,7 @@ def render_html_report(
   </div>
 </section>
 """
-        )
-
-    overview_section = ""
-    if len(intensities) > 1:
-        overview_section = _render_overview_section(
-            rows,
-            metric_specs,
-            split=split,
-            intensities=intensities,
-            baseline_algo=baseline_algo,
-        )
+            )
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -886,10 +932,11 @@ def render_html_report(
     <p>
       Comparison built directly from evaluation aggregates under <code>results/eval</code>.
       Positive percentages indicate improvement relative to the baseline for the metric direction.
+      Vehicle-only and pedestrian-enabled evaluations are shown in separate sections.
       Higher-is-better and lower-is-better metrics are handled automatically.
     </p>
   </header>
-  {overview_section}
+  {''.join(overview_sections)}
   {''.join(sections)}
 </body>
 </html>
@@ -902,6 +949,7 @@ def write_comparison_outputs(
     output_dir: str | Path = "results/compare",
     split: str | None = "test",
     intensities: Sequence[str] | None = None,
+    variants: Sequence[str] | None = None,
     algorithms: Sequence[str] | None = None,
     metric_keys: Sequence[str] | None = None,
     baseline_algo: str = "baseline",
@@ -911,6 +959,7 @@ def write_comparison_outputs(
         load_aggregate_rows(results_root),
         split=split,
         intensities=intensities,
+        variants=variants,
         algorithms=algorithms,
     )
     if not rows:
@@ -920,8 +969,9 @@ def write_comparison_outputs(
     output_root = ensure_dir(output_dir)
 
     intensity_slug = "all" if not intensities else "-".join(intensities)
+    variant_slug = "" if not variants else "_" + "-".join(variants)
     split_slug = split or "all"
-    stem = f"comparison_{split_slug}_{intensity_slug}"
+    stem = f"comparison_{split_slug}_{intensity_slug}{variant_slug}"
 
     csv_path = output_root / f"{stem}.csv"
     md_path = output_root / f"{stem}.md"

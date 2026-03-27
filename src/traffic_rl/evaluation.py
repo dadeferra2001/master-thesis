@@ -15,6 +15,7 @@ def run_baseline_episode(
     route_file: str | Path,
     route_seed: int,
     output_dir: str | Path,
+    variant: str = "vehicle",
     use_gui: bool = False,
 ) -> dict[str, Any]:
     output_dir = Path(output_dir)
@@ -38,7 +39,7 @@ def run_baseline_episode(
     summary = summarize_episode(
         step_history,
         tripinfo_output,
-        extra={"algorithm": "baseline", "route_seed": int(route_seed)},
+        extra={"algorithm": "baseline", "route_seed": int(route_seed), "variant": variant},
     )
     write_csv(output_dir / "step_metrics.csv", step_history)
     write_json(output_dir / "summary.json", summary)
@@ -52,6 +53,7 @@ def run_policy_episode(
     route_file: str | Path,
     route_seed: int,
     output_dir: str | Path,
+    variant: str = "vehicle",
     deterministic: bool = True,
     use_gui: bool = False,
 ) -> dict[str, Any]:
@@ -101,6 +103,7 @@ def run_policy_episode(
             "algorithm": algo,
             "route_seed": int(route_seed),
             "episode_return": episode_return,
+            "variant": variant,
         },
     )
     write_csv(output_dir / "step_metrics.csv", step_history)

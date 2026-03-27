@@ -1,0 +1,386 @@
+<routes>
+    <flow id="west_north_straight_w0" from="-h11" to="-h13" begin="0" end="450" vehsPerHour="136" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_north_left_w0" from="-h11" to="v11" begin="0" end="450" vehsPerHour="32" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_north_right_w0" from="-h11" to="-v13" begin="0" end="450" vehsPerHour="50" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_west_north_straight_w0" begin="0" end="450" personsPerHour="32" departPos="base">
+        <personTrip from="-h11" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_west_north_left_w0" begin="0" end="450" personsPerHour="11" departPos="base">
+        <personTrip from="-h11" to="v11" />
+    </personFlow>
+    <personFlow id="ped_west_north_right_w0" begin="0" end="450" personsPerHour="11" departPos="base">
+        <personTrip from="-h11" to="-v13" />
+    </personFlow>
+    <flow id="west_south_straight_w0" from="-h21" to="-h23" begin="0" end="450" vehsPerHour="132" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_south_left_w0" from="-h21" to="v11" begin="0" end="450" vehsPerHour="26" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_south_right_w0" from="-h21" to="-v13" begin="0" end="450" vehsPerHour="33" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_west_south_straight_w0" begin="0" end="450" personsPerHour="27" departPos="base">
+        <personTrip from="-h21" to="-h23" />
+    </personFlow>
+    <personFlow id="ped_west_south_left_w0" begin="0" end="450" personsPerHour="5" departPos="base">
+        <personTrip from="-h21" to="v11" />
+    </personFlow>
+    <personFlow id="ped_west_south_right_w0" begin="0" end="450" personsPerHour="11" departPos="base">
+        <personTrip from="-h21" to="-v13" />
+    </personFlow>
+    <flow id="east_north_straight_w0" from="h13" to="h11" begin="0" end="450" vehsPerHour="121" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_north_left_w0" from="h13" to="-v23" begin="0" end="450" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_north_right_w0" from="h13" to="v21" begin="0" end="450" vehsPerHour="38" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_east_north_straight_w0" begin="0" end="450" personsPerHour="32" departPos="base">
+        <personTrip from="h13" to="h11" />
+    </personFlow>
+    <personFlow id="ped_east_north_left_w0" begin="0" end="450" personsPerHour="5" departPos="base">
+        <personTrip from="h13" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_east_north_right_w0" begin="0" end="450" personsPerHour="10" departPos="base">
+        <personTrip from="h13" to="v21" />
+    </personFlow>
+    <flow id="east_south_straight_w0" from="h23" to="h21" begin="0" end="450" vehsPerHour="117" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_south_left_w0" from="h23" to="-v23" begin="0" end="450" vehsPerHour="36" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_south_right_w0" from="h23" to="v21" begin="0" end="450" vehsPerHour="53" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_east_south_straight_w0" begin="0" end="450" personsPerHour="19" departPos="base">
+        <personTrip from="h23" to="h21" />
+    </personFlow>
+    <personFlow id="ped_east_south_left_w0" begin="0" end="450" personsPerHour="6" departPos="base">
+        <personTrip from="h23" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_east_south_right_w0" begin="0" end="450" personsPerHour="19" departPos="base">
+        <personTrip from="h23" to="v21" />
+    </personFlow>
+    <flow id="north_west_straight_w0" from="-v11" to="-v13" begin="0" end="450" vehsPerHour="191" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_west_left_w0" from="-v11" to="-h13" begin="0" end="450" vehsPerHour="30" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_west_right_w0" from="-v11" to="h11" begin="0" end="450" vehsPerHour="36" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_north_west_straight_w0" begin="0" end="450" personsPerHour="26" departPos="base">
+        <personTrip from="-v11" to="-v13" />
+    </personFlow>
+    <personFlow id="ped_north_west_left_w0" begin="0" end="450" personsPerHour="10" departPos="base">
+        <personTrip from="-v11" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_north_west_right_w0" begin="0" end="450" personsPerHour="13" departPos="base">
+        <personTrip from="-v11" to="h11" />
+    </personFlow>
+    <flow id="north_east_straight_w0" from="-v21" to="-v23" begin="0" end="450" vehsPerHour="157" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_east_left_w0" from="-v21" to="-h13" begin="0" end="450" vehsPerHour="51" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_east_right_w0" from="-v21" to="h11" begin="0" end="450" vehsPerHour="47" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_north_east_straight_w0" begin="0" end="450" personsPerHour="41" departPos="base">
+        <personTrip from="-v21" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_north_east_left_w0" begin="0" end="450" personsPerHour="7" departPos="base">
+        <personTrip from="-v21" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_north_east_right_w0" begin="0" end="450" personsPerHour="9" departPos="base">
+        <personTrip from="-v21" to="h11" />
+    </personFlow>
+    <flow id="south_west_straight_w0" from="v13" to="v11" begin="0" end="450" vehsPerHour="69" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_west_left_w0" from="v13" to="h21" begin="0" end="450" vehsPerHour="58" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_west_right_w0" from="v13" to="-h23" begin="0" end="450" vehsPerHour="33" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_south_west_straight_w0" begin="0" end="450" personsPerHour="29" departPos="base">
+        <personTrip from="v13" to="v11" />
+    </personFlow>
+    <personFlow id="ped_south_west_left_w0" begin="0" end="450" personsPerHour="7" departPos="base">
+        <personTrip from="v13" to="h21" />
+    </personFlow>
+    <personFlow id="ped_south_west_right_w0" begin="0" end="450" personsPerHour="14" departPos="base">
+        <personTrip from="v13" to="-h23" />
+    </personFlow>
+    <flow id="south_east_straight_w0" from="v23" to="v21" begin="0" end="450" vehsPerHour="123" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_east_left_w0" from="v23" to="h21" begin="0" end="450" vehsPerHour="67" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_east_right_w0" from="v23" to="-h23" begin="0" end="450" vehsPerHour="47" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_south_east_straight_w0" begin="0" end="450" personsPerHour="29" departPos="base">
+        <personTrip from="v23" to="v21" />
+    </personFlow>
+    <personFlow id="ped_south_east_left_w0" begin="0" end="450" personsPerHour="12" departPos="base">
+        <personTrip from="v23" to="h21" />
+    </personFlow>
+    <personFlow id="ped_south_east_right_w0" begin="0" end="450" personsPerHour="13" departPos="base">
+        <personTrip from="v23" to="-h23" />
+    </personFlow>
+    <flow id="west_north_straight_w1" from="-h11" to="-h13" begin="450" end="900" vehsPerHour="178" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_north_left_w1" from="-h11" to="v11" begin="450" end="900" vehsPerHour="20" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_north_right_w1" from="-h11" to="-v13" begin="450" end="900" vehsPerHour="44" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_west_north_straight_w1" begin="450" end="900" personsPerHour="34" departPos="base">
+        <personTrip from="-h11" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_west_north_left_w1" begin="450" end="900" personsPerHour="8" departPos="base">
+        <personTrip from="-h11" to="v11" />
+    </personFlow>
+    <personFlow id="ped_west_north_right_w1" begin="450" end="900" personsPerHour="11" departPos="base">
+        <personTrip from="-h11" to="-v13" />
+    </personFlow>
+    <flow id="west_south_straight_w1" from="-h21" to="-h23" begin="450" end="900" vehsPerHour="197" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_south_left_w1" from="-h21" to="v11" begin="450" end="900" vehsPerHour="84" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_south_right_w1" from="-h21" to="-v13" begin="450" end="900" vehsPerHour="55" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_west_south_straight_w1" begin="450" end="900" personsPerHour="23" departPos="base">
+        <personTrip from="-h21" to="-h23" />
+    </personFlow>
+    <personFlow id="ped_west_south_left_w1" begin="450" end="900" personsPerHour="26" departPos="base">
+        <personTrip from="-h21" to="v11" />
+    </personFlow>
+    <personFlow id="ped_west_south_right_w1" begin="450" end="900" personsPerHour="12" departPos="base">
+        <personTrip from="-h21" to="-v13" />
+    </personFlow>
+    <flow id="east_north_straight_w1" from="h13" to="h11" begin="450" end="900" vehsPerHour="170" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_north_left_w1" from="h13" to="-v23" begin="450" end="900" vehsPerHour="26" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_north_right_w1" from="h13" to="v21" begin="450" end="900" vehsPerHour="35" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_east_north_straight_w1" begin="450" end="900" personsPerHour="27" departPos="base">
+        <personTrip from="h13" to="h11" />
+    </personFlow>
+    <personFlow id="ped_east_north_left_w1" begin="450" end="900" personsPerHour="19" departPos="base">
+        <personTrip from="h13" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_east_north_right_w1" begin="450" end="900" personsPerHour="11" departPos="base">
+        <personTrip from="h13" to="v21" />
+    </personFlow>
+    <flow id="east_south_straight_w1" from="h23" to="h21" begin="450" end="900" vehsPerHour="125" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_south_left_w1" from="h23" to="-v23" begin="450" end="900" vehsPerHour="39" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_south_right_w1" from="h23" to="v21" begin="450" end="900" vehsPerHour="56" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_east_south_straight_w1" begin="450" end="900" personsPerHour="36" departPos="base">
+        <personTrip from="h23" to="h21" />
+    </personFlow>
+    <personFlow id="ped_east_south_left_w1" begin="450" end="900" personsPerHour="10" departPos="base">
+        <personTrip from="h23" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_east_south_right_w1" begin="450" end="900" personsPerHour="5" departPos="base">
+        <personTrip from="h23" to="v21" />
+    </personFlow>
+    <flow id="north_west_straight_w1" from="-v11" to="-v13" begin="450" end="900" vehsPerHour="133" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_west_left_w1" from="-v11" to="-h13" begin="450" end="900" vehsPerHour="29" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_west_right_w1" from="-v11" to="h11" begin="450" end="900" vehsPerHour="27" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_north_west_straight_w1" begin="450" end="900" personsPerHour="31" departPos="base">
+        <personTrip from="-v11" to="-v13" />
+    </personFlow>
+    <personFlow id="ped_north_west_left_w1" begin="450" end="900" personsPerHour="14" departPos="base">
+        <personTrip from="-v11" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_north_west_right_w1" begin="450" end="900" personsPerHour="10" departPos="base">
+        <personTrip from="-v11" to="h11" />
+    </personFlow>
+    <flow id="north_east_straight_w1" from="-v21" to="-v23" begin="450" end="900" vehsPerHour="146" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_east_left_w1" from="-v21" to="-h13" begin="450" end="900" vehsPerHour="56" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_east_right_w1" from="-v21" to="h11" begin="450" end="900" vehsPerHour="41" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_north_east_straight_w1" begin="450" end="900" personsPerHour="26" departPos="base">
+        <personTrip from="-v21" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_north_east_left_w1" begin="450" end="900" personsPerHour="7" departPos="base">
+        <personTrip from="-v21" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_north_east_right_w1" begin="450" end="900" personsPerHour="15" departPos="base">
+        <personTrip from="-v21" to="h11" />
+    </personFlow>
+    <flow id="south_west_straight_w1" from="v13" to="v11" begin="450" end="900" vehsPerHour="93" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_west_left_w1" from="v13" to="h21" begin="450" end="900" vehsPerHour="79" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_west_right_w1" from="v13" to="-h23" begin="450" end="900" vehsPerHour="42" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_south_west_straight_w1" begin="450" end="900" personsPerHour="41" departPos="base">
+        <personTrip from="v13" to="v11" />
+    </personFlow>
+    <personFlow id="ped_south_west_left_w1" begin="450" end="900" personsPerHour="13" departPos="base">
+        <personTrip from="v13" to="h21" />
+    </personFlow>
+    <personFlow id="ped_south_west_right_w1" begin="450" end="900" personsPerHour="6" departPos="base">
+        <personTrip from="v13" to="-h23" />
+    </personFlow>
+    <flow id="south_east_straight_w1" from="v23" to="v21" begin="450" end="900" vehsPerHour="139" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_east_left_w1" from="v23" to="h21" begin="450" end="900" vehsPerHour="49" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_east_right_w1" from="v23" to="-h23" begin="450" end="900" vehsPerHour="74" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_south_east_straight_w1" begin="450" end="900" personsPerHour="30" departPos="base">
+        <personTrip from="v23" to="v21" />
+    </personFlow>
+    <personFlow id="ped_south_east_left_w1" begin="450" end="900" personsPerHour="7" departPos="base">
+        <personTrip from="v23" to="h21" />
+    </personFlow>
+    <personFlow id="ped_south_east_right_w1" begin="450" end="900" personsPerHour="5" departPos="base">
+        <personTrip from="v23" to="-h23" />
+    </personFlow>
+    <flow id="west_north_straight_w2" from="-h11" to="-h13" begin="900" end="1350" vehsPerHour="202" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_north_left_w2" from="-h11" to="v11" begin="900" end="1350" vehsPerHour="32" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_north_right_w2" from="-h11" to="-v13" begin="900" end="1350" vehsPerHour="36" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_west_north_straight_w2" begin="900" end="1350" personsPerHour="55" departPos="base">
+        <personTrip from="-h11" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_west_north_left_w2" begin="900" end="1350" personsPerHour="16" departPos="base">
+        <personTrip from="-h11" to="v11" />
+    </personFlow>
+    <personFlow id="ped_west_north_right_w2" begin="900" end="1350" personsPerHour="10" departPos="base">
+        <personTrip from="-h11" to="-v13" />
+    </personFlow>
+    <flow id="west_south_straight_w2" from="-h21" to="-h23" begin="900" end="1350" vehsPerHour="116" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_south_left_w2" from="-h21" to="v11" begin="900" end="1350" vehsPerHour="85" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_south_right_w2" from="-h21" to="-v13" begin="900" end="1350" vehsPerHour="43" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_west_south_straight_w2" begin="900" end="1350" personsPerHour="43" departPos="base">
+        <personTrip from="-h21" to="-h23" />
+    </personFlow>
+    <personFlow id="ped_west_south_left_w2" begin="900" end="1350" personsPerHour="14" departPos="base">
+        <personTrip from="-h21" to="v11" />
+    </personFlow>
+    <personFlow id="ped_west_south_right_w2" begin="900" end="1350" personsPerHour="11" departPos="base">
+        <personTrip from="-h21" to="-v13" />
+    </personFlow>
+    <flow id="east_north_straight_w2" from="h13" to="h11" begin="900" end="1350" vehsPerHour="159" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_north_left_w2" from="h13" to="-v23" begin="900" end="1350" vehsPerHour="60" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_north_right_w2" from="h13" to="v21" begin="900" end="1350" vehsPerHour="32" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_east_north_straight_w2" begin="900" end="1350" personsPerHour="38" departPos="base">
+        <personTrip from="h13" to="h11" />
+    </personFlow>
+    <personFlow id="ped_east_north_left_w2" begin="900" end="1350" personsPerHour="17" departPos="base">
+        <personTrip from="h13" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_east_north_right_w2" begin="900" end="1350" personsPerHour="5" departPos="base">
+        <personTrip from="h13" to="v21" />
+    </personFlow>
+    <flow id="east_south_straight_w2" from="h23" to="h21" begin="900" end="1350" vehsPerHour="175" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_south_left_w2" from="h23" to="-v23" begin="900" end="1350" vehsPerHour="54" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_south_right_w2" from="h23" to="v21" begin="900" end="1350" vehsPerHour="47" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_east_south_straight_w2" begin="900" end="1350" personsPerHour="31" departPos="base">
+        <personTrip from="h23" to="h21" />
+    </personFlow>
+    <personFlow id="ped_east_south_left_w2" begin="900" end="1350" personsPerHour="13" departPos="base">
+        <personTrip from="h23" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_east_south_right_w2" begin="900" end="1350" personsPerHour="10" departPos="base">
+        <personTrip from="h23" to="v21" />
+    </personFlow>
+    <flow id="north_west_straight_w2" from="-v11" to="-v13" begin="900" end="1350" vehsPerHour="161" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_west_left_w2" from="-v11" to="-h13" begin="900" end="1350" vehsPerHour="63" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_west_right_w2" from="-v11" to="h11" begin="900" end="1350" vehsPerHour="52" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_north_west_straight_w2" begin="900" end="1350" personsPerHour="37" departPos="base">
+        <personTrip from="-v11" to="-v13" />
+    </personFlow>
+    <personFlow id="ped_north_west_left_w2" begin="900" end="1350" personsPerHour="12" departPos="base">
+        <personTrip from="-v11" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_north_west_right_w2" begin="900" end="1350" personsPerHour="8" departPos="base">
+        <personTrip from="-v11" to="h11" />
+    </personFlow>
+    <flow id="north_east_straight_w2" from="-v21" to="-v23" begin="900" end="1350" vehsPerHour="161" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_east_left_w2" from="-v21" to="-h13" begin="900" end="1350" vehsPerHour="40" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_east_right_w2" from="-v21" to="h11" begin="900" end="1350" vehsPerHour="52" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_north_east_straight_w2" begin="900" end="1350" personsPerHour="44" departPos="base">
+        <personTrip from="-v21" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_north_east_left_w2" begin="900" end="1350" personsPerHour="11" departPos="base">
+        <personTrip from="-v21" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_north_east_right_w2" begin="900" end="1350" personsPerHour="11" departPos="base">
+        <personTrip from="-v21" to="h11" />
+    </personFlow>
+    <flow id="south_west_straight_w2" from="v13" to="v11" begin="900" end="1350" vehsPerHour="128" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_west_left_w2" from="v13" to="h21" begin="900" end="1350" vehsPerHour="31" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_west_right_w2" from="v13" to="-h23" begin="900" end="1350" vehsPerHour="73" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_south_west_straight_w2" begin="900" end="1350" personsPerHour="38" departPos="base">
+        <personTrip from="v13" to="v11" />
+    </personFlow>
+    <personFlow id="ped_south_west_left_w2" begin="900" end="1350" personsPerHour="7" departPos="base">
+        <personTrip from="v13" to="h21" />
+    </personFlow>
+    <personFlow id="ped_south_west_right_w2" begin="900" end="1350" personsPerHour="7" departPos="base">
+        <personTrip from="v13" to="-h23" />
+    </personFlow>
+    <flow id="south_east_straight_w2" from="v23" to="v21" begin="900" end="1350" vehsPerHour="174" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_east_left_w2" from="v23" to="h21" begin="900" end="1350" vehsPerHour="35" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_east_right_w2" from="v23" to="-h23" begin="900" end="1350" vehsPerHour="39" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_south_east_straight_w2" begin="900" end="1350" personsPerHour="42" departPos="base">
+        <personTrip from="v23" to="v21" />
+    </personFlow>
+    <personFlow id="ped_south_east_left_w2" begin="900" end="1350" personsPerHour="9" departPos="base">
+        <personTrip from="v23" to="h21" />
+    </personFlow>
+    <personFlow id="ped_south_east_right_w2" begin="900" end="1350" personsPerHour="6" departPos="base">
+        <personTrip from="v23" to="-h23" />
+    </personFlow>
+    <flow id="west_north_straight_w3" from="-h11" to="-h13" begin="1350" end="1800" vehsPerHour="132" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_north_left_w3" from="-h11" to="v11" begin="1350" end="1800" vehsPerHour="41" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_north_right_w3" from="-h11" to="-v13" begin="1350" end="1800" vehsPerHour="29" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_west_north_straight_w3" begin="1350" end="1800" personsPerHour="26" departPos="base">
+        <personTrip from="-h11" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_west_north_left_w3" begin="1350" end="1800" personsPerHour="8" departPos="base">
+        <personTrip from="-h11" to="v11" />
+    </personFlow>
+    <personFlow id="ped_west_north_right_w3" begin="1350" end="1800" personsPerHour="7" departPos="base">
+        <personTrip from="-h11" to="-v13" />
+    </personFlow>
+    <flow id="west_south_straight_w3" from="-h21" to="-h23" begin="1350" end="1800" vehsPerHour="113" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_south_left_w3" from="-h21" to="v11" begin="1350" end="1800" vehsPerHour="28" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="west_south_right_w3" from="-h21" to="-v13" begin="1350" end="1800" vehsPerHour="59" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_west_south_straight_w3" begin="1350" end="1800" personsPerHour="27" departPos="base">
+        <personTrip from="-h21" to="-h23" />
+    </personFlow>
+    <personFlow id="ped_west_south_left_w3" begin="1350" end="1800" personsPerHour="7" departPos="base">
+        <personTrip from="-h21" to="v11" />
+    </personFlow>
+    <personFlow id="ped_west_south_right_w3" begin="1350" end="1800" personsPerHour="8" departPos="base">
+        <personTrip from="-h21" to="-v13" />
+    </personFlow>
+    <flow id="east_north_straight_w3" from="h13" to="h11" begin="1350" end="1800" vehsPerHour="127" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_north_left_w3" from="h13" to="-v23" begin="1350" end="1800" vehsPerHour="20" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_north_right_w3" from="h13" to="v21" begin="1350" end="1800" vehsPerHour="51" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_east_north_straight_w3" begin="1350" end="1800" personsPerHour="42" departPos="base">
+        <personTrip from="h13" to="h11" />
+    </personFlow>
+    <personFlow id="ped_east_north_left_w3" begin="1350" end="1800" personsPerHour="7" departPos="base">
+        <personTrip from="h13" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_east_north_right_w3" begin="1350" end="1800" personsPerHour="9" departPos="base">
+        <personTrip from="h13" to="v21" />
+    </personFlow>
+    <flow id="east_south_straight_w3" from="h23" to="h21" begin="1350" end="1800" vehsPerHour="180" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_south_left_w3" from="h23" to="-v23" begin="1350" end="1800" vehsPerHour="31" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="east_south_right_w3" from="h23" to="v21" begin="1350" end="1800" vehsPerHour="40" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_east_south_straight_w3" begin="1350" end="1800" personsPerHour="27" departPos="base">
+        <personTrip from="h23" to="h21" />
+    </personFlow>
+    <personFlow id="ped_east_south_left_w3" begin="1350" end="1800" personsPerHour="13" departPos="base">
+        <personTrip from="h23" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_east_south_right_w3" begin="1350" end="1800" personsPerHour="6" departPos="base">
+        <personTrip from="h23" to="v21" />
+    </personFlow>
+    <flow id="north_west_straight_w3" from="-v11" to="-v13" begin="1350" end="1800" vehsPerHour="118" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_west_left_w3" from="-v11" to="-h13" begin="1350" end="1800" vehsPerHour="40" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_west_right_w3" from="-v11" to="h11" begin="1350" end="1800" vehsPerHour="20" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_north_west_straight_w3" begin="1350" end="1800" personsPerHour="29" departPos="base">
+        <personTrip from="-v11" to="-v13" />
+    </personFlow>
+    <personFlow id="ped_north_west_left_w3" begin="1350" end="1800" personsPerHour="6" departPos="base">
+        <personTrip from="-v11" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_north_west_right_w3" begin="1350" end="1800" personsPerHour="10" departPos="base">
+        <personTrip from="-v11" to="h11" />
+    </personFlow>
+    <flow id="north_east_straight_w3" from="-v21" to="-v23" begin="1350" end="1800" vehsPerHour="127" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_east_left_w3" from="-v21" to="-h13" begin="1350" end="1800" vehsPerHour="20" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="north_east_right_w3" from="-v21" to="h11" begin="1350" end="1800" vehsPerHour="42" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_north_east_straight_w3" begin="1350" end="1800" personsPerHour="23" departPos="base">
+        <personTrip from="-v21" to="-v23" />
+    </personFlow>
+    <personFlow id="ped_north_east_left_w3" begin="1350" end="1800" personsPerHour="18" departPos="base">
+        <personTrip from="-v21" to="-h13" />
+    </personFlow>
+    <personFlow id="ped_north_east_right_w3" begin="1350" end="1800" personsPerHour="9" departPos="base">
+        <personTrip from="-v21" to="h11" />
+    </personFlow>
+    <flow id="south_west_straight_w3" from="v13" to="v11" begin="1350" end="1800" vehsPerHour="142" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_west_left_w3" from="v13" to="h21" begin="1350" end="1800" vehsPerHour="28" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_west_right_w3" from="v13" to="-h23" begin="1350" end="1800" vehsPerHour="39" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_south_west_straight_w3" begin="1350" end="1800" personsPerHour="28" departPos="base">
+        <personTrip from="v13" to="v11" />
+    </personFlow>
+    <personFlow id="ped_south_west_left_w3" begin="1350" end="1800" personsPerHour="8" departPos="base">
+        <personTrip from="v13" to="h21" />
+    </personFlow>
+    <personFlow id="ped_south_west_right_w3" begin="1350" end="1800" personsPerHour="14" departPos="base">
+        <personTrip from="v13" to="-h23" />
+    </personFlow>
+    <flow id="south_east_straight_w3" from="v23" to="v21" begin="1350" end="1800" vehsPerHour="102" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_east_left_w3" from="v23" to="h21" begin="1350" end="1800" vehsPerHour="43" departSpeed="max" departPos="base" departLane="best" />
+    <flow id="south_east_right_w3" from="v23" to="-h23" begin="1350" end="1800" vehsPerHour="61" departSpeed="max" departPos="base" departLane="best" />
+    <personFlow id="ped_south_east_straight_w3" begin="1350" end="1800" personsPerHour="34" departPos="base">
+        <personTrip from="v23" to="v21" />
+    </personFlow>
+    <personFlow id="ped_south_east_left_w3" begin="1350" end="1800" personsPerHour="9" departPos="base">
+        <personTrip from="v23" to="h21" />
+    </personFlow>
+    <personFlow id="ped_south_east_right_w3" begin="1350" end="1800" personsPerHour="8" departPos="base">
+        <personTrip from="v23" to="-h23" />
+    </personFlow>
+</routes>

@@ -14,6 +14,7 @@ import torch
 import torch.optim as optim
 
 from .controllers import CentralizedController
+from .config import experiment_variant
 from .envs import CentralizedGridEnv
 from .metrics import summarize_episode
 from .models import FactorizedJointActorCritic
@@ -39,6 +40,7 @@ def train(
     train_cfg = ppo_config["train"]
     rng = np.random.default_rng(seed)
     device = get_device(train_cfg.get("device", "auto"))
+    variant = experiment_variant(config)
 
     route_spec = sample_route(route_specs, rng)
     env = CentralizedGridEnv(config, route_spec["path"], seed=seed)
@@ -73,8 +75,8 @@ def train(
     next_done = torch.zeros((), dtype=torch.float32, device=device)
     episode_return = 0.0
     global_step = 0
-    log_path = train_log_path("centralized_ppo", intensity, seed)
-    progress = ProgressReporter("centralized_ppo", intensity, seed, total_timesteps, num_updates)
+    log_path = train_log_path("centralized_ppo", intensity, seed, variant=variant)
+    progress = ProgressReporter("centralized_ppo", intensity, seed, total_timesteps, num_updates, variant=variant)
 
     for update in range(1, num_updates + 1):
         last_pg_loss = 0.0
@@ -213,11 +215,12 @@ def train(
         )
 
         if update % int(train_cfg["save_every_updates"]) == 0 or update == num_updates:
-            checkpoint_path = checkpoint_dir("centralized_ppo", intensity, seed) / f"update_{update:04d}.pt"
+            checkpoint_path = checkpoint_dir("centralized_ppo", intensity, seed, variant=variant) / f"update_{update:04d}.pt"
             save_checkpoint(
                 checkpoint_path,
                 {
                     "algo": "centralized_ppo",
+                    "variant": variant,
                     "agent_order": list(TLS_IDS),
                     "obs_dim": obs_dim,
                     "action_dim": action_dim,
@@ -233,11 +236,12 @@ def train(
             )
 
     env.close()
-    final_path = checkpoint_dir("centralized_ppo", intensity, seed) / "final.pt"
+    final_path = checkpoint_dir("centralized_ppo", intensity, seed, variant=variant) / "final.pt"
     save_checkpoint(
         final_path,
         {
             "algo": "centralized_ppo",
+            "variant": variant,
             "agent_order": list(TLS_IDS),
             "obs_dim": obs_dim,
             "action_dim": action_dim,

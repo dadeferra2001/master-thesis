@@ -16,6 +16,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Aggregate per-run evaluation summaries into a single CSV.")
     parser.add_argument("--results-root", default="results/eval")
     parser.add_argument("--output", default="results/tables/evaluation_summary.csv")
+    parser.add_argument("--variant", choices=["vehicle", "peds"])
     return parser.parse_args()
 
 
@@ -27,6 +28,9 @@ def main() -> None:
         with path.open("r", encoding="utf-8") as handle:
             payload = json.load(handle)
         payload["source_file"] = str(path.relative_to(ROOT))
+        payload["variant"] = payload.get("variant") or ("peds" if "/peds/" in payload["source_file"] else "vehicle")
+        if args.variant and payload["variant"] != args.variant:
+            continue
         rows.append(payload)
     write_csv(args.output, rows)
     print(args.output)

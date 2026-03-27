@@ -72,7 +72,7 @@ def summarize_step_metrics(step_history: list[dict[str, Any]]) -> dict[str, Any]
     backlogs = [float(record.get("system_total_backlogged", 0.0)) for record in step_history]
     final_record = step_history[-1]
 
-    return {
+    summary = {
         "num_decision_steps": len(step_history),
         "mean_average_speed": _safe_mean(speeds),
         "mean_average_waiting_time": _safe_mean(waits),
@@ -83,6 +83,25 @@ def summarize_step_metrics(step_history: list[dict[str, Any]]) -> dict[str, Any]
         "mean_backlog": _safe_mean(backlogs),
         "final_backlog": float(final_record.get("system_total_backlogged", 0.0)),
     }
+    has_pedestrian_metrics = any(
+        "pedestrian_total_waiting_time" in record or "pedestrian_mean_waiting_time" in record for record in step_history
+    )
+    if has_pedestrian_metrics:
+        ped_waits = [float(record.get("pedestrian_mean_waiting_time", 0.0)) for record in step_history]
+        ped_total_waits = [float(record.get("pedestrian_total_waiting_time", 0.0)) for record in step_history]
+        ped_queues = [float(record.get("pedestrian_total_queue_length", 0.0)) for record in step_history]
+        ped_max_waits = [float(record.get("pedestrian_max_waiting_time", 0.0)) for record in step_history]
+        summary.update(
+            {
+                "mean_average_pedestrian_waiting_time": _safe_mean(ped_waits),
+                "mean_total_pedestrian_waiting_time": _safe_mean(ped_total_waits),
+                "mean_pedestrian_queue_length": _safe_mean(ped_queues),
+                "max_pedestrian_queue_length": float(max(ped_queues)),
+                "mean_max_pedestrian_waiting_time": _safe_mean(ped_max_waits),
+                "max_pedestrian_waiting_time": float(max(ped_max_waits)),
+            }
+        )
+    return summary
 
 
 def summarize_episode(

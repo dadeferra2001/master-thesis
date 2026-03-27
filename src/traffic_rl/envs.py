@@ -14,9 +14,11 @@ import libsumo
 import numpy as np
 import sumo_rl.environment.env as sumo_env_module
 import traci
+from sumo_rl.environment.observations import DefaultObservationFunction
 
-from .config import resolve_path
+from .config import effective_net_file, pedestrians_enabled, resolve_path
 from .controllers import concatenate_global_observation
+from .pedestrians import attach_pedestrian_metrics, make_pedestrian_observation_class, make_pedestrian_reward_fn
 from .scenario import TLS_IDS
 
 parallel_env = sumo_env_module.parallel_env  # noqa: E402
@@ -62,7 +64,7 @@ def build_env_kwargs(
         )
 
     return {
-        "net_file": str(resolve_path(scenario_cfg["net_file"])),
+        "net_file": str(resolve_path(effective_net_file(config))),
         "route_file": str(resolve_path(route_file)),
         "use_gui": effective_use_gui,
         "num_seconds": int(scenario_cfg["episode_seconds"]),
@@ -73,7 +75,12 @@ def build_env_kwargs(
         "max_depart_delay": int(scenario_cfg["max_depart_delay"]),
         "waiting_time_memory": int(scenario_cfg["waiting_time_memory"]),
         "time_to_teleport": int(scenario_cfg["time_to_teleport"]),
-        "reward_fn": scenario_cfg["reward_fn"],
+        "reward_fn": make_pedestrian_reward_fn(config) if pedestrians_enabled(config) else scenario_cfg["reward_fn"],
+        "observation_class": (
+            make_pedestrian_observation_class(config)
+            if pedestrians_enabled(config)
+            else DefaultObservationFunction
+        ),
         "ts_ids": list(scenario_cfg["tls_ids"]),
         "fixed_ts": fixed_ts,
         "add_system_info": bool(scenario_cfg["add_system_info"]),
@@ -94,7 +101,7 @@ def make_raw_env(
 ) -> SumoEnvironment:
     effective_use_gui = bool(config["scenario"]["use_gui"] if use_gui is None else use_gui)
     configure_sumo_backend(use_gui=effective_use_gui)
-    return SumoEnvironment(
+    env = SumoEnvironment(
         **build_env_kwargs(
             config,
             route_file,
@@ -104,6 +111,9 @@ def make_raw_env(
             use_gui=effective_use_gui,
         )
     )
+    if pedestrians_enabled(config):
+        attach_pedestrian_metrics(env)
+    return env
 
 
 class CentralizedGridEnv(gym.Env):
@@ -186,6 +196,8 @@ class ParallelGridEnv:
             )
         )
         self.base_env = self.env.unwrapped.env
+        if pedestrians_enabled(config):
+            attach_pedestrian_metrics(self.base_env)
 
     @property
     def observation_dim(self) -> int:
