@@ -8,6 +8,9 @@ import unittest
 from pathlib import Path
 import sys
 from unittest.mock import patch
+import xml.etree.ElementTree as ET
+
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -16,9 +19,12 @@ from traffic_rl.algo_shared import train as train_shared
 from traffic_rl.comparison import write_comparison_outputs
 from traffic_rl.config import load_experiment_config, set_pedestrians_enabled
 from traffic_rl.envs import CentralizedGridEnv, ParallelGridEnv, configure_sumo_backend
+from traffic_rl.evaluation import validate_checkpoint_variant
 from traffic_rl.metrics import summarize_episode
 from traffic_rl.pedestrians import make_pedestrian_reward_fn
-from traffic_rl.routes import generate_route_manifest
+from traffic_rl.routes import generate_route_file, generate_route_manifest
+from traffic_rl.train_common import maybe_anneal_coefficient
+from traffic_rl.utils import route_specs_for_split
 from sumo_rl.environment.traffic_signal import TrafficSignal
 
 
@@ -108,6 +114,20 @@ class PipelineSmokeTest(unittest.TestCase):
         self.assertTrue(all(route["with_pedestrians"] for route in self.ped_manifest["routes"]))
         self.assertTrue(all("routes_peds/" in route["path"] for route in self.ped_manifest["routes"]))
 
+    def test_route_specs_reject_manifest_route_mismatch(self) -> None:
+        stale_route_path = self.tmp_root / "stale_seed_321.rou.xml"
+        route_record = generate_route_file(stale_route_path, intensity="low", seed=321, config=self.config)
+        route_record["split"] = "test"
+
+        root = ET.parse(stale_route_path).getroot()
+        for element in list(root)[len(list(root)) // 2 :]:
+            root.remove(element)
+        ET.ElementTree(root).write(stale_route_path, encoding="utf-8", xml_declaration=False)
+
+        manifest = {"routes": [route_record]}
+        with self.assertRaisesRegex(ValueError, "Route manifest mismatch"):
+            route_specs_for_split(manifest, split="test", intensity="low")
+
     def test_centralized_env_step(self) -> None:
         route_file = self.manifest["routes"][0]["path"]
         env = CentralizedGridEnv(self.config, route_file, seed=0)
@@ -173,10 +193,74 @@ class PipelineSmokeTest(unittest.TestCase):
             served_reward = reward_fn(ts)
             self.assertGreater(served_reward, rewards[-1])
 
+    def test_pedestrian_reward_uses_mean_wait_signal_by_default(self) -> None:
+        config = load_experiment_config("configs/env.yaml")
+        set_pedestrians_enabled(config, True)
+        config["scenario"]["pedestrians"]["reward_weight"] = 1.0
+        config["scenario"]["pedestrians"]["waiting_time_scale"] = 20.0
+        config["scenario"]["pedestrians"]["fairness_wait_threshold"] = 999.0
+        config["scenario"]["pedestrians"]["max_wait_penalty"] = 0.0
+        config["scenario"]["pedestrians"]["starvation_penalty"] = 0.0
+
+        single_wait_ts = _FakeTrafficSignal(
+            state="Gr",
+            edge_people={":1_w0": ["p0"], ":1_w1": []},
+            waiting_times={"p0": 20.0},
+        )
+        double_wait_ts = _FakeTrafficSignal(
+            state="Gr",
+            edge_people={":1_w0": ["p0", "p1"], ":1_w1": []},
+            waiting_times={"p0": 20.0, "p1": 20.0},
+        )
+
+        with patch.dict(TrafficSignal.reward_fns, {"diff-waiting-time": lambda _ts: 0.0}, clear=False):
+            reward_fn = make_pedestrian_reward_fn(config)
+            self.assertAlmostEqual(reward_fn(single_wait_ts), reward_fn(double_wait_ts))
+
     def test_sumo_backend_switching(self) -> None:
         self.assertEqual(configure_sumo_backend(use_gui=False), "libsumo")
         self.assertEqual(configure_sumo_backend(use_gui=True), "traci")
         self.assertEqual(configure_sumo_backend(use_gui=False), "libsumo")
+
+    def test_centralized_step_averages_agent_rewards(self) -> None:
+        class _FakeCentralizedRawEnv:
+            def step(self, action_dict: dict[str, int]):
+                self.last_action_dict = action_dict
+                obs_dict = {
+                    "1": np.asarray([0.0], dtype=np.float32),
+                    "2": np.asarray([1.0], dtype=np.float32),
+                    "5": np.asarray([2.0], dtype=np.float32),
+                    "6": np.asarray([3.0], dtype=np.float32),
+                }
+                rewards = {"1": 1.0, "2": 2.0, "5": 3.0, "6": 4.0}
+                dones = {"__all__": False}
+                return obs_dict, rewards, dones, {}
+
+        fake_wrapper = type("FakeCentralizedWrapper", (), {})()
+        fake_wrapper.agent_order = ("1", "2", "5", "6")
+        fake_wrapper.env = _FakeCentralizedRawEnv()
+
+        obs, reward, terminated, truncated, _ = CentralizedGridEnv.step(
+            fake_wrapper,
+            np.asarray([0, 1, 2, 3], dtype=np.int64),
+        )
+
+        self.assertAlmostEqual(reward, 2.5)
+        self.assertEqual(obs.shape, (4,))
+        self.assertFalse(terminated)
+        self.assertFalse(truncated)
+        self.assertEqual(fake_wrapper.env.last_action_dict, {"1": 0, "2": 1, "5": 2, "6": 3})
+
+    def test_entropy_coefficient_anneals_linearly(self) -> None:
+        self.assertAlmostEqual(maybe_anneal_coefficient(0.01, 0.001, update=1, num_updates=5, anneal=True), 0.01)
+        self.assertAlmostEqual(maybe_anneal_coefficient(0.01, 0.001, update=3, num_updates=5, anneal=True), 0.0055)
+        self.assertAlmostEqual(maybe_anneal_coefficient(0.01, 0.001, update=5, num_updates=5, anneal=True), 0.001)
+        self.assertAlmostEqual(maybe_anneal_coefficient(0.01, 0.001, update=5, num_updates=5, anneal=False), 0.01)
+
+    def test_eval_rejects_variant_mismatch(self) -> None:
+        with self.assertRaisesRegex(ValueError, "Checkpoint variant mismatch"):
+            validate_checkpoint_variant({"variant": None}, "peds", "results/checkpoints/shared_ppo/medium/seed_0/final.pt")
+        validate_checkpoint_variant({"variant": "peds"}, "peds", "results/checkpoints/shared_ppo/peds/medium/seed_0/final.pt")
 
     def test_centralized_controls_all_traffic_lights(self) -> None:
         route_file = self.manifest["routes"][0]["path"]

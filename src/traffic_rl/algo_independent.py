@@ -22,6 +22,7 @@ from .scenario import TLS_IDS
 from .train_common import (
     ProgressReporter,
     compute_gae,
+    maybe_anneal_coefficient,
     maybe_anneal_lr,
     minibatch_indices,
     sample_route,
@@ -87,6 +88,13 @@ def train(
                 num_updates=num_updates,
                 anneal_lr=bool(train_cfg.get("anneal_lr", True)),
             )
+        ent_coef_now = maybe_anneal_coefficient(
+            initial_value=float(train_cfg["ent_coef"]),
+            final_value=float(train_cfg.get("ent_coef_final", train_cfg["ent_coef"])),
+            update=update,
+            num_updates=num_updates,
+            anneal=bool(train_cfg.get("anneal_ent_coef", False)),
+        )
 
         for step in range(num_steps):
             global_step += 1
@@ -192,7 +200,7 @@ def train(
                     entropy_loss = entropy.mean()
                     loss = (
                         pg_loss
-                        - float(train_cfg["ent_coef"]) * entropy_loss
+                        - ent_coef_now * entropy_loss
                         + float(train_cfg["vf_coef"]) * v_loss
                     )
                     last_pg_losses.append(float(pg_loss.item()))
@@ -216,6 +224,7 @@ def train(
                 "policy_loss": float(np.mean(last_pg_losses)) if last_pg_losses else 0.0,
                 "value_loss": float(np.mean(last_v_losses)) if last_v_losses else 0.0,
                 "entropy": float(np.mean(last_entropies)) if last_entropies else 0.0,
+                "entropy_coef": ent_coef_now,
                 "total_loss": float(np.mean(last_total_losses)) if last_total_losses else 0.0,
                 "approx_kl": float(np.mean(last_approx_kls)) if last_approx_kls else 0.0,
                 "clipfrac": float(np.mean(clipfracs)) if clipfracs else 0.0,

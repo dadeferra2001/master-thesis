@@ -186,6 +186,7 @@ def make_pedestrian_observation_class(config: dict[str, Any]) -> type[DefaultObs
 
 def make_pedestrian_reward_fn(config: dict[str, Any]) -> Callable[[TrafficSignal], float]:
     ped_cfg = pedestrian_scenario_config(config)
+    reward_metric = str(ped_cfg.get("reward_metric", "mean_waiting_time")).strip().lower()
     waiting_time_scale = float(max(ped_cfg["waiting_time_scale"], 1.0))
     reward_weight = float(ped_cfg["reward_weight"])
     fairness_wait_threshold = float(max(ped_cfg["fairness_wait_threshold"], 1.0))
@@ -193,10 +194,19 @@ def make_pedestrian_reward_fn(config: dict[str, Any]) -> Callable[[TrafficSignal
     starvation_penalty = float(ped_cfg["starvation_penalty"])
     vehicle_reward_fn = TrafficSignal.reward_fns["diff-waiting-time"]
 
+    if reward_metric not in {"mean_waiting_time", "total_waiting_time"}:
+        raise ValueError(f"Unsupported pedestrian reward metric: {reward_metric}")
+
     def pedestrian_reward(ts: TrafficSignal) -> float:
         vehicle_reward = float(vehicle_reward_fn(ts))
         crossing_states = pedestrian_crossing_states(ts)
-        ped_wait = float(sum(crossing.waiting_time for crossing in crossing_states)) / waiting_time_scale
+        total_wait = float(sum(crossing.waiting_time for crossing in crossing_states))
+        total_queue = int(sum(crossing.queue_length for crossing in crossing_states))
+        if reward_metric == "mean_waiting_time":
+            wait_signal = total_wait / float(total_queue) if total_queue > 0 else 0.0
+        else:
+            wait_signal = total_wait
+        ped_wait = wait_signal / waiting_time_scale
         last_wait = float(getattr(ts, "_last_pedestrian_waiting_time", 0.0))
         setattr(ts, "_last_pedestrian_waiting_time", ped_wait)
         max_wait = float(max((crossing.max_waiting_time for crossing in crossing_states), default=0.0))

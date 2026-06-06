@@ -22,6 +22,7 @@ from .scenario import TLS_IDS
 from .train_common import (
     ProgressReporter,
     compute_gae,
+    maybe_anneal_coefficient,
     maybe_anneal_lr,
     minibatch_indices,
     sample_route,
@@ -91,6 +92,13 @@ def train(
             update=update,
             num_updates=num_updates,
             anneal_lr=bool(train_cfg.get("anneal_lr", True)),
+        )
+        ent_coef_now = maybe_anneal_coefficient(
+            initial_value=float(train_cfg["ent_coef"]),
+            final_value=float(train_cfg.get("ent_coef_final", train_cfg["ent_coef"])),
+            update=update,
+            num_updates=num_updates,
+            anneal=bool(train_cfg.get("anneal_ent_coef", False)),
         )
 
         for step in range(num_steps):
@@ -183,7 +191,7 @@ def train(
 
                 loss = (
                     pg_loss
-                    - float(train_cfg["ent_coef"]) * entropy_loss
+                    - ent_coef_now * entropy_loss
                     + float(train_cfg["vf_coef"]) * v_loss
                 )
                 last_pg_loss = float(pg_loss.item())
@@ -207,6 +215,7 @@ def train(
                 "policy_loss": last_pg_loss,
                 "value_loss": last_v_loss,
                 "entropy": last_entropy,
+                "entropy_coef": ent_coef_now,
                 "total_loss": last_total_loss,
                 "approx_kl": last_approx_kl,
                 "clipfrac": float(np.mean(clipfracs)) if clipfracs else 0.0,

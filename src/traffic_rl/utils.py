@@ -9,6 +9,7 @@ from datetime import datetime
 import warnings
 from pathlib import Path
 from typing import Any
+import xml.etree.ElementTree as ET
 
 import numpy as np
 import torch
@@ -79,6 +80,11 @@ def load_manifest(path: str | Path) -> dict[str, Any]:
         return json.load(handle)
 
 
+def _route_element_count(path: Path, tag: str) -> int:
+    root = ET.parse(path).getroot()
+    return sum(1 for element in root if element.tag == tag)
+
+
 def route_specs_for_split(
     manifest: dict[str, Any],
     split: str,
@@ -89,6 +95,31 @@ def route_specs_for_split(
         for route in manifest["routes"]
         if route["split"] == split and (intensity is None or route["intensity"] == intensity)
     ]
+    for route in matches:
+        route_path = resolve_path(route["path"])
+        if not route_path.exists():
+            raise FileNotFoundError(f"Route file not found: {route['path']}")
+
+        expected_flow_count = route.get("flow_count")
+        if expected_flow_count is not None:
+            actual_flow_count = _route_element_count(route_path, "flow")
+            if actual_flow_count != int(expected_flow_count):
+                raise ValueError(
+                    "Route manifest mismatch for "
+                    f"{route['path']}: manifest expects {int(expected_flow_count)} flows, "
+                    f"but file contains {actual_flow_count}. Regenerate the route files and manifest."
+                )
+
+        expected_person_flow_count = route.get("person_flow_count")
+        if expected_person_flow_count is not None:
+            actual_person_flow_count = _route_element_count(route_path, "personFlow")
+            if actual_person_flow_count != int(expected_person_flow_count):
+                raise ValueError(
+                    "Route manifest mismatch for "
+                    f"{route['path']}: manifest expects {int(expected_person_flow_count)} personFlow entries, "
+                    f"but file contains {actual_person_flow_count}. Regenerate the route files and manifest."
+                )
+
     return sorted(matches, key=lambda item: (item["intensity"], item["seed"]))
 
 

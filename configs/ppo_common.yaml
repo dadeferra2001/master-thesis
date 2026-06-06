@@ -10,6 +10,8 @@ train:
   clip_coef: 0.2
   vf_coef: 0.5
   ent_coef: 0.01
+  anneal_ent_coef: true
+  ent_coef_final: 0.001
   max_grad_norm: 0.5
   target_kl: null
   hidden_sizes: [128, 128]

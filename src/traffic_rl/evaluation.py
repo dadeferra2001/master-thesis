@@ -10,6 +10,34 @@ from .metrics import summarize_episode
 from .utils import write_csv, write_json
 
 
+def normalize_checkpoint_variant(checkpoint: dict[str, Any]) -> str:
+    variant = str(checkpoint.get("variant") or "").strip().lower()
+    return "peds" if variant == "peds" else "vehicle"
+
+
+def validate_checkpoint_variant(
+    checkpoint: dict[str, Any],
+    requested_variant: str,
+    checkpoint_path: str | Path,
+) -> None:
+    checkpoint_variant = normalize_checkpoint_variant(checkpoint)
+    requested = "peds" if str(requested_variant).strip().lower() == "peds" else "vehicle"
+    if checkpoint_variant == requested:
+        return
+
+    checkpoint_label = "pedestrian-enabled" if checkpoint_variant == "peds" else "vehicle-only"
+    requested_label = "pedestrian-enabled" if requested == "peds" else "vehicle-only"
+    message = (
+        f"Checkpoint variant mismatch: {checkpoint_path} is {checkpoint_label}, "
+        f"but evaluation requested a {requested_label} environment."
+    )
+    if requested == "peds":
+        message += " Use a checkpoint under results/checkpoints/<algorithm>/peds/... or rerun without --with-pedestrians."
+    else:
+        message += " Remove --with-pedestrians or use a vehicle-only checkpoint."
+    raise ValueError(message)
+
+
 def run_baseline_episode(
     config: dict[str, Any],
     route_file: str | Path,

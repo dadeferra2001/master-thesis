@@ -106,9 +106,11 @@ python scripts/train_independent_ppo.py --intensity medium --seed 0 --with-pedes
 python scripts/train_mappo.py --intensity medium --seed 0 --with-pedestrians
 ```
 
-Pedestrian mode now uses a stronger pedestrian-aware reward by default. In `configs/env.yaml`, the pedestrian-only knobs are:
+Pedestrian mode now uses a balanced pedestrian-aware reward by default. In `configs/env.yaml`, the pedestrian-only knobs are:
 
+- `scenario.pedestrians.reward_metric`
 - `scenario.pedestrians.reward_weight`
+- `scenario.pedestrians.waiting_time_scale`
 - `scenario.pedestrians.fairness_wait_threshold`
 - `scenario.pedestrians.max_wait_penalty`
 - `scenario.pedestrians.starvation_penalty`
@@ -116,11 +118,13 @@ Pedestrian mode now uses a stronger pedestrian-aware reward by default. In `conf
 The default pedestrian reward combines:
 
 - the existing vehicle diff-waiting-time reward
-- a weighted pedestrian diff-waiting-time term
+- a weighted pedestrian diff-waiting-time term based on normalized pedestrian waiting
 - a penalty when any pedestrian wait exceeds the fairness threshold
 - a penalty when queued pedestrians keep getting skipped by the active phase
 
-If pedestrian waiting is still too high after retraining, increase the pedestrian penalties before changing the vehicle-side setup.
+The PPO configs also anneal entropy by default from `train.ent_coef` down to `train.ent_coef_final` so the final policy is less stochastic at evaluation time.
+
+If pedestrian waiting is still too high after retraining, increase the pedestrian penalties gradually before changing the vehicle-side setup.
 
 Evaluate a checkpoint:
 
@@ -242,5 +246,5 @@ python scripts/train_shared_ppo.py \
 - Pedestrian route generation writes to `routes_peds/` and uses `routes/manifests/routes_manifest_peds.json`.
 - Pedestrian training and evaluation outputs are stored under `results/.../<algorithm>/peds/...` and do not overwrite vehicle-only runs.
 - `aggregate_results.py` and `compare_results.py` are variant-aware. Use `--variant peds` or `--variant vehicle` if you want a filtered report.
-- Pedestrian checkpoints trained before the fairness reward update should be retrained if you want the policy itself to optimize pedestrian waiting correctly.
+- Pedestrian checkpoints trained before the reward normalization and entropy annealing update should be retrained if you want the policy itself to optimize the new objective.
 - Training prints one progress line per PPO update with percent complete, steps, recent return, SPS, and ETA.

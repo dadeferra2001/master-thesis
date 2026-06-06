@@ -16,7 +16,7 @@ import torch
 
 from traffic_rl import algo_centralized, algo_independent, algo_mappo, algo_shared
 from traffic_rl.config import default_manifest_path, experiment_variant, load_experiment_config, set_pedestrians_enabled
-from traffic_rl.evaluation import run_policy_episode
+from traffic_rl.evaluation import run_policy_episode, validate_checkpoint_variant
 from traffic_rl.reporting import aggregate_episode_summaries
 from traffic_rl.utils import eval_dir, get_device, load_manifest, route_specs_for_split, write_csv, write_json
 
@@ -48,17 +48,43 @@ def load_controller(checkpoint_path: str, device: torch.device):
         controller = algo_mappo.load_controller(checkpoint_path, device=device)
     else:
         raise ValueError(f"Unsupported checkpoint algo: {algo}")
-    return algo, controller
+    return algo, controller, checkpoint
+
+
+def validate_checkpoint_freshness(checkpoint_path: str | Path, checkpoint: dict[str, object]) -> None:
+    path = Path(checkpoint_path)
+    if path.name != "final.pt":
+        return
+
+    final_global_step = int(checkpoint.get("global_step", 0) or 0)
+    stale_candidates: list[tuple[int, str]] = []
+    for sibling in sorted(path.parent.glob("update_*.pt")):
+        sibling_checkpoint = torch.load(sibling, map_location="cpu")
+        sibling_global_step = int(sibling_checkpoint.get("global_step", 0) or 0)
+        if sibling_global_step > final_global_step:
+            stale_candidates.append((sibling_global_step, sibling.name))
+
+    if not stale_candidates:
+        return
+
+    best_global_step, best_name = max(stale_candidates, key=lambda item: item[0])
+    raise ValueError(
+        f"{path} appears stale or overwritten: final.pt has global_step={final_global_step}, "
+        f"but {best_name} has global_step={best_global_step}. "
+        f"Evaluate the newer update checkpoint instead."
+    )
 
 
 def main() -> None:
     args = parse_args()
     device = get_device(args.device)
-    algo, controller = load_controller(args.checkpoint, device)
+    algo, controller, checkpoint = load_controller(args.checkpoint, device)
+    validate_checkpoint_freshness(args.checkpoint, checkpoint)
     config = load_experiment_config(args.env_config)
     if args.with_pedestrians:
         set_pedestrians_enabled(config, True)
     variant = experiment_variant(config)
+    validate_checkpoint_variant(checkpoint, variant or "vehicle", args.checkpoint)
     manifest = load_manifest(args.manifest or default_manifest_path(config))
     intensities = [args.intensity] if args.intensity else manifest["intensities"]
 

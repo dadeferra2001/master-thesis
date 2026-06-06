@@ -65,6 +65,20 @@ def maybe_anneal_lr(
     return lr_now
 
 
+def maybe_anneal_coefficient(
+    initial_value: float,
+    final_value: float,
+    update: int,
+    num_updates: int,
+    anneal: bool,
+) -> float:
+    if not anneal or num_updates <= 1:
+        return initial_value
+    progress = (update - 1.0) / float(max(num_updates - 1, 1))
+    progress = min(max(progress, 0.0), 1.0)
+    return initial_value + (final_value - initial_value) * progress
+
+
 def save_checkpoint(path: str | Path, payload: dict[str, Any]) -> None:
     target = resolve_path(path)
     target.parent.mkdir(parents=True, exist_ok=True)

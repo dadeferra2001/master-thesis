@@ -164,7 +164,7 @@ class CentralizedGridEnv(gym.Env):
         action_dict = {agent: int(action_array[idx]) for idx, agent in enumerate(self.agent_order)}
         obs_dict, rewards, dones, info = self.env.step(action_dict)
         obs = concatenate_global_observation(obs_dict, self.agent_order)
-        reward = float(sum(float(rewards[agent]) for agent in self.agent_order))
+        reward = float(np.mean([float(rewards[agent]) for agent in self.agent_order]))
         truncated = bool(dones["__all__"])
         return obs, reward, False, truncated, info
 
