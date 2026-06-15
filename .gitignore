@@ -2,3 +2,4 @@ results/
 *.pyc
 __pycache__/
 .codex
+results_0/

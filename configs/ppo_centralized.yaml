@@ -1,4 +1,3 @@
 train:
-  total_timesteps: 400000
   num_steps: 256
   hidden_sizes: [256, 256]

@@ -82,23 +82,25 @@ class PipelineSmokeTest(unittest.TestCase):
         cls.config["route_generation"]["episode_seconds"] = 60
         cls.config["route_generation"]["num_windows"] = 2
         cls.manifest_path = cls.tmp_root / "test_manifest.json"
-        cls.manifest = generate_route_manifest(
-            config=cls.config,
-            train_seeds=[0],
-            test_seeds=[100],
-            intensities=["low"],
-            output_path=cls.manifest_path,
-        )
+        with patch("traffic_rl.routes.default_routes_root", return_value=cls.tmp_root / "routes"):
+            cls.manifest = generate_route_manifest(
+                config=cls.config,
+                train_seeds=[0],
+                test_seeds=[100],
+                intensities=["low"],
+                output_path=cls.manifest_path,
+            )
         cls.ped_config = copy.deepcopy(cls.config)
         set_pedestrians_enabled(cls.ped_config, True)
         cls.ped_manifest_path = cls.tmp_root / "test_manifest_peds.json"
-        cls.ped_manifest = generate_route_manifest(
-            config=cls.ped_config,
-            train_seeds=[0],
-            test_seeds=[100],
-            intensities=["low"],
-            output_path=cls.ped_manifest_path,
-        )
+        with patch("traffic_rl.routes.default_routes_root", return_value=cls.tmp_root / "routes_peds"):
+            cls.ped_manifest = generate_route_manifest(
+                config=cls.ped_config,
+                train_seeds=[0],
+                test_seeds=[100],
+                intensities=["low"],
+                output_path=cls.ped_manifest_path,
+            )
 
     @classmethod
     def tearDownClass(cls) -> None:

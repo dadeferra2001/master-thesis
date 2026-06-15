@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +24,10 @@ from .scenario import TLS_IDS
 
 parallel_env = sumo_env_module.parallel_env  # noqa: E402
 SumoEnvironment = sumo_env_module.SumoEnvironment  # noqa: E402
+
+
+def _sumo_environment_supports(parameter: str) -> bool:
+    return parameter in inspect.signature(SumoEnvironment.__init__).parameters
 
 
 def configure_sumo_backend(use_gui: bool = False) -> str:
@@ -63,7 +68,7 @@ def build_env_kwargs(
             ]
         )
 
-    return {
+    kwargs = {
         "net_file": str(resolve_path(effective_net_file(config))),
         "route_file": str(resolve_path(route_file)),
         "use_gui": effective_use_gui,
@@ -81,7 +86,6 @@ def build_env_kwargs(
             if pedestrians_enabled(config)
             else DefaultObservationFunction
         ),
-        "ts_ids": list(scenario_cfg["tls_ids"]),
         "fixed_ts": fixed_ts,
         "add_system_info": bool(scenario_cfg["add_system_info"]),
         "add_per_agent_info": bool(scenario_cfg["add_per_agent_info"]),
@@ -89,6 +93,19 @@ def build_env_kwargs(
         "sumo_seed": int(seed) if seed is not None else 0,
         "additional_sumo_cmd": " ".join(additional_cmd_parts) if additional_cmd_parts else None,
     }
+    if _sumo_environment_supports("ts_ids"):
+        kwargs["ts_ids"] = list(scenario_cfg["tls_ids"])
+    return kwargs
+
+
+def validate_traffic_signal_ids(env: SumoEnvironment, expected_ids: tuple[str, ...]) -> None:
+    actual_ids = set(env.ts_ids)
+    missing_ids = [ts_id for ts_id in expected_ids if ts_id not in actual_ids]
+    if missing_ids:
+        raise ValueError(
+            "SUMO environment is missing configured traffic lights: "
+            f"{', '.join(missing_ids)}. Discovered traffic lights: {sorted(actual_ids)}"
+        )
 
 
 def make_raw_env(
@@ -138,6 +155,7 @@ class CentralizedGridEnv(gym.Env):
             tripinfo_output=tripinfo_output,
             use_gui=effective_use_gui,
         )
+        validate_traffic_signal_ids(self.env, self.agent_order)
         single_obs_dim = int(np.prod(self.env.observation_spaces(self.agent_order[0]).shape))
         num_agents = len(self.agent_order)
         action_dim = int(self.env.action_spaces(self.agent_order[0]).n)
@@ -196,6 +214,7 @@ class ParallelGridEnv:
             )
         )
         self.base_env = self.env.unwrapped.env
+        validate_traffic_signal_ids(self.base_env, self.agent_order)
         if pedestrians_enabled(config):
             attach_pedestrian_metrics(self.base_env)
 

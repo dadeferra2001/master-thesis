@@ -13,7 +13,10 @@ from traffic_rl.comparison import DEFAULT_METRICS, write_comparison_outputs
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build comparison tables and charts from evaluation results.")
-    parser.add_argument("--results-root", default="results/eval")
+    parser.add_argument(
+        "--results-root",
+        help="Evaluation aggregate root. Defaults to results/eval_across_seeds if it exists, otherwise results/eval.",
+    )
     parser.add_argument("--output-dir", default="results/compare")
     parser.add_argument("--split", default="test", choices=["train", "test"])
     parser.add_argument("--intensity", action="append", choices=["low", "medium", "high"])
@@ -38,8 +41,12 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    results_root = args.results_root
+    if results_root is None:
+        across_seed_root = ROOT / "results" / "eval_across_seeds"
+        results_root = "results/eval_across_seeds" if across_seed_root.exists() else "results/eval"
     outputs = write_comparison_outputs(
-        results_root=args.results_root,
+        results_root=results_root,
         output_dir=args.output_dir,
         split=args.split,
         intensities=args.intensity,

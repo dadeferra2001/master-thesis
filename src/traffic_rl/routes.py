@@ -106,8 +106,13 @@ def generate_route_file(
     ET.indent(tree, space="    ")
     tree.write(output_path, encoding="utf-8", xml_declaration=False)
 
+    try:
+        manifest_path = output_path.relative_to(resolve_path("."))
+    except ValueError:
+        manifest_path = output_path
+
     return {
-        "path": str(output_path.relative_to(resolve_path("."))),
+        "path": str(manifest_path),
         "intensity": intensity,
         "seed": seed,
         "flow_count": flow_count,

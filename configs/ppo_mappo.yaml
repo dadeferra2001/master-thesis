@@ -1,5 +1,4 @@
 train:
-  total_timesteps: 250000
   num_steps: 256
   hidden_sizes: [128, 128]
   agent_id: true

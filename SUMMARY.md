@@ -253,10 +253,10 @@ Meaningful implications:
 
 Per-algorithm overrides:
 
-- `ppo_centralized.yaml`: larger network and `total_timesteps = 400000`
+- `ppo_centralized.yaml`: larger network
 - `ppo_shared.yaml`: enables `agent_id: true`
 - `ppo_independent.yaml`: keeps local non-shared setup
-- `ppo_mappo.yaml`: enables `agent_id: true`, lower `total_timesteps`
+- `ppo_mappo.yaml`: enables `agent_id: true`
 
 ### `configs/experiment_matrix.yaml`
 
@@ -548,6 +548,7 @@ MAPPO
 ### Training semantics that matter
 
 - `total_timesteps` means environment decision steps, not total per-agent samples
+- all PPO approaches inherit the same `total_timesteps` budget from `configs/ppo_common.yaml`
 - because of that, decentralized methods process more PPO samples per environment step than centralized PPO
 - centralized PPO batch size is `num_steps`
 - shared PPO and MAPPO batch size is `num_steps * 4`

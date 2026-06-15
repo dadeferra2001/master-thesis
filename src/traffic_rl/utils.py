@@ -141,8 +141,29 @@ def train_log_path(algo: str, intensity: str, seed: int, variant: str | None = N
     return root / f"seed_{seed}.jsonl"
 
 
-def eval_dir(algo: str, split: str, intensity: str, route_seed: int, variant: str | None = None) -> Path:
-    return ensure_dir(_results_root("eval", algo, variant=variant) / split / intensity / f"route_{route_seed:03d}")
+def eval_group_dir(
+    algo: str,
+    split: str,
+    intensity: str,
+    variant: str | None = None,
+    train_seed: int | None = None,
+    results_namespace: str = "eval",
+) -> Path:
+    root = _results_root(results_namespace, algo, variant=variant) / split / intensity
+    if train_seed is not None:
+        root /= f"train_seed_{train_seed}"
+    return ensure_dir(root)
+
+
+def eval_dir(
+    algo: str,
+    split: str,
+    intensity: str,
+    route_seed: int,
+    variant: str | None = None,
+    train_seed: int | None = None,
+) -> Path:
+    return ensure_dir(eval_group_dir(algo, split, intensity, variant=variant, train_seed=train_seed) / f"route_{route_seed:03d}")
 
 
 def tensorboard_run_dir(algo: str, intensity: str, seed: int, variant: str | None = None) -> Path:

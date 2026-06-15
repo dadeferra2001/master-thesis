@@ -161,11 +161,27 @@ Aggregate evaluation tables:
 python scripts/aggregate_results.py
 ```
 
+This writes both seed-level and seed-averaged outputs:
+
+```text
+results/tables/evaluation_per_seed.csv
+results/tables/evaluation_across_seeds.csv
+results/eval_across_seeds/<algorithm>/<split>/<intensity>/aggregate.json
+```
+
+Policy evaluation outputs are kept per training seed:
+
+```text
+results/eval/<algorithm>/<split>/<intensity>/train_seed_<seed>/
+```
+
 Build a comparison table and an HTML dashboard with charts:
 
 ```bash
 python scripts/compare_results.py --split test --intensity medium
 ```
+
+After `aggregate_results.py` has been run, comparison reports use `results/eval_across_seeds` by default.
 
 This writes:
 
@@ -207,7 +223,7 @@ Pedestrian runs use the `peds` namespace:
 results/checkpoints/<algorithm>/peds/<intensity>/seed_<seed>/
 results/train_logs/<algorithm>/peds/<intensity>/seed_<seed>.jsonl
 results/tensorboard/<algorithm>/peds/<intensity>/seed_<seed>/<timestamp>/
-results/eval/<algorithm>/peds/<split>/<intensity>/
+results/eval/<algorithm>/peds/<split>/<intensity>/train_seed_<seed>/
 ```
 
 Logged scalars include:
@@ -239,6 +255,7 @@ python scripts/train_shared_ppo.py \
 ## Notes
 
 - `total_timesteps` is counted in environment decision steps, not per-agent samples.
+- All PPO approaches inherit the same default `total_timesteps` budget from `configs/ppo_common.yaml`.
 - Multi-agent methods therefore consume more PPO samples per environment step than centralized PPO.
 - Generated test routes are deterministic by seed and can be reused across all algorithms for fair comparison.
 - Training logs are written as JSONL under `results/train_logs/`.

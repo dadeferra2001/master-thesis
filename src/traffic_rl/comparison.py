@@ -41,7 +41,9 @@ DEFAULT_METRICS: tuple[MetricSpec, ...] = (
     MetricSpec("throughput", "Throughput", True, "veh", 1),
     MetricSpec("mean_queue_length", "Mean queue length", False, "veh", 2),
     MetricSpec("mean_time_loss", "Mean time loss", False, "s", 2),
-    MetricSpec("teleports", "Teleports", False, "veh", 1),
+    MetricSpec("mean_backlog", "Mean backlog", False, "veh", 2),
+    MetricSpec("congestion_failure", "Congestion-failure rate", False, "", 2),
+    MetricSpec("teleports", "Teleports", False, "veh", 1),  # tienila o toglila, è scelta a parte
 )
 
 ALGORITHM_ORDER = {
@@ -168,6 +170,9 @@ def build_comparison_rows(
             "variant_label": VARIANT_LABELS.get(variant, variant),
             "intensity": row.get("intensity"),
             "episodes": row.get("episodes"),
+            "aggregation_level": row.get("aggregation_level", ""),
+            "seed_count": row.get("seed_count", ""),
+            "train_seeds": row.get("train_seeds", ""),
             "source_file": row.get("source_file", ""),
         }
         baseline = baseline_by_variant_and_intensity.get((variant, str(row.get("intensity"))))

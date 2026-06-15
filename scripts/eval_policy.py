@@ -18,7 +18,7 @@ from traffic_rl import algo_centralized, algo_independent, algo_mappo, algo_shar
 from traffic_rl.config import default_manifest_path, experiment_variant, load_experiment_config, set_pedestrians_enabled
 from traffic_rl.evaluation import run_policy_episode, validate_checkpoint_variant
 from traffic_rl.reporting import aggregate_episode_summaries
-from traffic_rl.utils import eval_dir, get_device, load_manifest, route_specs_for_split, write_csv, write_json
+from traffic_rl.utils import eval_dir, eval_group_dir, get_device, load_manifest, route_specs_for_split, write_csv, write_json
 
 
 def parse_args() -> argparse.Namespace:
@@ -80,6 +80,7 @@ def main() -> None:
     device = get_device(args.device)
     algo, controller, checkpoint = load_controller(args.checkpoint, device)
     validate_checkpoint_freshness(args.checkpoint, checkpoint)
+    train_seed = int(checkpoint["seed"])
     config = load_experiment_config(args.env_config)
     if args.with_pedestrians:
         set_pedestrians_enabled(config, True)
@@ -91,7 +92,14 @@ def main() -> None:
     for intensity in intensities:
         rows = []
         for route_spec in route_specs_for_split(manifest, split=args.split, intensity=intensity):
-            run_dir = eval_dir(algo, args.split, intensity, int(route_spec["seed"]), variant=variant)
+            run_dir = eval_dir(
+                algo,
+                args.split,
+                intensity,
+                int(route_spec["seed"]),
+                variant=variant,
+                train_seed=train_seed,
+            )
             summary = run_policy_episode(
                 algo=algo,
                 controller=controller,
@@ -104,13 +112,20 @@ def main() -> None:
                 use_gui=args.gui,
             )
             summary["intensity"] = intensity
+            summary["train_seed"] = train_seed
             rows.append(summary)
         aggregate = aggregate_episode_summaries(rows)
-        aggregate.update({"algorithm": algo, "split": args.split, "intensity": intensity, "variant": variant or "vehicle"})
-        output_root = ROOT / "results" / "eval" / algo
-        if variant:
-            output_root /= variant
-        output_root = output_root / args.split / intensity
+        aggregate.update(
+            {
+                "algorithm": algo,
+                "split": args.split,
+                "intensity": intensity,
+                "variant": variant or "vehicle",
+                "train_seed": train_seed,
+                "checkpoint": str(Path(args.checkpoint)),
+            }
+        )
+        output_root = eval_group_dir(algo, args.split, intensity, variant=variant, train_seed=train_seed)
         write_csv(output_root / "episodes.csv", rows)
         write_json(output_root / "aggregate.json", aggregate)
         print(output_root / "aggregate.json")

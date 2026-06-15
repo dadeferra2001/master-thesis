@@ -1,6 +1,6 @@
 {
   "episode_seconds": 1800,
-  "generated_at": "2026-03-10T12:36:33.325789+00:00",
+  "generated_at": "2026-06-15T18:29:34.181228+00:00",
   "intensities": [
     "low",
     "medium",
@@ -12,720 +12,902 @@
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_000.rou.xml",
+      "person_flow_count": 0,
       "seed": 0,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_001.rou.xml",
+      "person_flow_count": 0,
       "seed": 1,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_002.rou.xml",
+      "person_flow_count": 0,
       "seed": 2,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_003.rou.xml",
+      "person_flow_count": 0,
       "seed": 3,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_004.rou.xml",
+      "person_flow_count": 0,
       "seed": 4,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_005.rou.xml",
+      "person_flow_count": 0,
       "seed": 5,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_006.rou.xml",
+      "person_flow_count": 0,
       "seed": 6,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_007.rou.xml",
+      "person_flow_count": 0,
       "seed": 7,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_008.rou.xml",
+      "person_flow_count": 0,
       "seed": 8,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_009.rou.xml",
+      "person_flow_count": 0,
       "seed": 9,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_010.rou.xml",
+      "person_flow_count": 0,
       "seed": 10,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_011.rou.xml",
+      "person_flow_count": 0,
       "seed": 11,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_012.rou.xml",
+      "person_flow_count": 0,
       "seed": 12,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_013.rou.xml",
+      "person_flow_count": 0,
       "seed": 13,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_014.rou.xml",
+      "person_flow_count": 0,
       "seed": 14,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_015.rou.xml",
+      "person_flow_count": 0,
       "seed": 15,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_016.rou.xml",
+      "person_flow_count": 0,
       "seed": 16,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_017.rou.xml",
+      "person_flow_count": 0,
       "seed": 17,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_018.rou.xml",
+      "person_flow_count": 0,
       "seed": 18,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/train/low/seed_019.rou.xml",
+      "person_flow_count": 0,
       "seed": 19,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_000.rou.xml",
+      "person_flow_count": 0,
       "seed": 0,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_001.rou.xml",
+      "person_flow_count": 0,
       "seed": 1,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_002.rou.xml",
+      "person_flow_count": 0,
       "seed": 2,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_003.rou.xml",
+      "person_flow_count": 0,
       "seed": 3,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_004.rou.xml",
+      "person_flow_count": 0,
       "seed": 4,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_005.rou.xml",
+      "person_flow_count": 0,
       "seed": 5,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_006.rou.xml",
+      "person_flow_count": 0,
       "seed": 6,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_007.rou.xml",
+      "person_flow_count": 0,
       "seed": 7,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_008.rou.xml",
+      "person_flow_count": 0,
       "seed": 8,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_009.rou.xml",
+      "person_flow_count": 0,
       "seed": 9,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_010.rou.xml",
+      "person_flow_count": 0,
       "seed": 10,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_011.rou.xml",
+      "person_flow_count": 0,
       "seed": 11,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_012.rou.xml",
+      "person_flow_count": 0,
       "seed": 12,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_013.rou.xml",
+      "person_flow_count": 0,
       "seed": 13,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_014.rou.xml",
+      "person_flow_count": 0,
       "seed": 14,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_015.rou.xml",
+      "person_flow_count": 0,
       "seed": 15,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_016.rou.xml",
+      "person_flow_count": 0,
       "seed": 16,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_017.rou.xml",
+      "person_flow_count": 0,
       "seed": 17,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_018.rou.xml",
+      "person_flow_count": 0,
       "seed": 18,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/train/medium/seed_019.rou.xml",
+      "person_flow_count": 0,
       "seed": 19,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_000.rou.xml",
+      "person_flow_count": 0,
       "seed": 0,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_001.rou.xml",
+      "person_flow_count": 0,
       "seed": 1,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_002.rou.xml",
+      "person_flow_count": 0,
       "seed": 2,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_003.rou.xml",
+      "person_flow_count": 0,
       "seed": 3,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_004.rou.xml",
+      "person_flow_count": 0,
       "seed": 4,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_005.rou.xml",
+      "person_flow_count": 0,
       "seed": 5,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_006.rou.xml",
+      "person_flow_count": 0,
       "seed": 6,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_007.rou.xml",
+      "person_flow_count": 0,
       "seed": 7,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_008.rou.xml",
+      "person_flow_count": 0,
       "seed": 8,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_009.rou.xml",
+      "person_flow_count": 0,
       "seed": 9,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_010.rou.xml",
+      "person_flow_count": 0,
       "seed": 10,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_011.rou.xml",
+      "person_flow_count": 0,
       "seed": 11,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_012.rou.xml",
+      "person_flow_count": 0,
       "seed": 12,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_013.rou.xml",
+      "person_flow_count": 0,
       "seed": 13,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_014.rou.xml",
+      "person_flow_count": 0,
       "seed": 14,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_015.rou.xml",
+      "person_flow_count": 0,
       "seed": 15,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_016.rou.xml",
+      "person_flow_count": 0,
       "seed": 16,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_017.rou.xml",
+      "person_flow_count": 0,
       "seed": 17,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_018.rou.xml",
+      "person_flow_count": 0,
       "seed": 18,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/train/high/seed_019.rou.xml",
+      "person_flow_count": 0,
       "seed": 19,
-      "split": "train"
+      "split": "train",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_100.rou.xml",
+      "person_flow_count": 0,
       "seed": 100,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_101.rou.xml",
+      "person_flow_count": 0,
       "seed": 101,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_102.rou.xml",
+      "person_flow_count": 0,
       "seed": 102,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_103.rou.xml",
+      "person_flow_count": 0,
       "seed": 103,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_104.rou.xml",
+      "person_flow_count": 0,
       "seed": 104,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_105.rou.xml",
+      "person_flow_count": 0,
       "seed": 105,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_106.rou.xml",
+      "person_flow_count": 0,
       "seed": 106,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_107.rou.xml",
+      "person_flow_count": 0,
       "seed": 107,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_108.rou.xml",
+      "person_flow_count": 0,
       "seed": 108,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 231.00000000000003,
       "flow_count": 96,
       "intensity": "low",
       "path": "routes/test/low/seed_109.rou.xml",
+      "person_flow_count": 0,
       "seed": 109,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_100.rou.xml",
+      "person_flow_count": 0,
       "seed": 100,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_101.rou.xml",
+      "person_flow_count": 0,
       "seed": 101,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_102.rou.xml",
+      "person_flow_count": 0,
       "seed": 102,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_103.rou.xml",
+      "person_flow_count": 0,
       "seed": 103,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_104.rou.xml",
+      "person_flow_count": 0,
       "seed": 104,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_105.rou.xml",
+      "person_flow_count": 0,
       "seed": 105,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_106.rou.xml",
+      "person_flow_count": 0,
       "seed": 106,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_107.rou.xml",
+      "person_flow_count": 0,
       "seed": 107,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_108.rou.xml",
+      "person_flow_count": 0,
       "seed": 108,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 420.0,
       "flow_count": 96,
       "intensity": "medium",
       "path": "routes/test/medium/seed_109.rou.xml",
+      "person_flow_count": 0,
       "seed": 109,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_100.rou.xml",
+      "person_flow_count": 0,
       "seed": 100,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_101.rou.xml",
+      "person_flow_count": 0,
       "seed": 101,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_102.rou.xml",
+      "person_flow_count": 0,
       "seed": 102,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_103.rou.xml",
+      "person_flow_count": 0,
       "seed": 103,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_104.rou.xml",
+      "person_flow_count": 0,
       "seed": 104,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_105.rou.xml",
+      "person_flow_count": 0,
       "seed": 105,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_106.rou.xml",
+      "person_flow_count": 0,
       "seed": 106,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_107.rou.xml",
+      "person_flow_count": 0,
       "seed": 107,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_108.rou.xml",
+      "person_flow_count": 0,
       "seed": 108,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     },
     {
       "base_origin_vehs_per_hour": 546.0,
       "flow_count": 96,
       "intensity": "high",
       "path": "routes/test/high/seed_109.rou.xml",
+      "person_flow_count": 0,
       "seed": 109,
-      "split": "test"
+      "split": "test",
+      "with_pedestrians": false
     }
-  ]
+  ],
+  "variant": "vehicle",
+  "with_pedestrians": false
 }
