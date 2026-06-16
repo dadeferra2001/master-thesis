@@ -1,0 +1,135 @@
+#!/usr/bin/env python
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from traffic_rl.runtime import bootstrap_sumo
+
+bootstrap_sumo(prefer_libsumo=True)
+
+import torch
+
+from traffic_rl import algo_centralized, algo_independent, algo_mappo, algo_shared
+from traffic_rl.config import default_manifest_path, experiment_variant, load_experiment_config, set_pedestrians_enabled
+from traffic_rl.evaluation import run_policy_episode, validate_checkpoint_variant
+from traffic_rl.reporting import aggregate_episode_summaries
+from traffic_rl.utils import eval_dir, eval_group_dir, get_device, load_manifest, route_specs_for_split, write_csv, write_json
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Evaluate a trained policy checkpoint.")
+    parser.add_argument("--checkpoint", required=True)
+    parser.add_argument("--env-config", default="configs/env.yaml")
+    parser.add_argument("--manifest")
+    parser.add_argument("--split", default="test", choices=["train", "test"])
+    parser.add_argument("--intensity", choices=["low", "medium", "high"])
+    parser.add_argument("--device", default="auto")
+    parser.add_argument("--stochastic", action="store_true")
+    parser.add_argument("--gui", action="store_true", help="Render the SUMO GUI during evaluation.")
+    parser.add_argument("--with-pedestrians", action="store_true")
+    return parser.parse_args()
+
+
+def load_controller(checkpoint_path: str, device: torch.device):
+    checkpoint = torch.load(checkpoint_path, map_location=device)
+    algo = checkpoint["algo"]
+    if algo == "centralized_ppo":
+        controller = algo_centralized.load_controller(checkpoint_path, device=device)
+    elif algo == "shared_ppo":
+        controller = algo_shared.load_controller(checkpoint_path, device=device)
+    elif algo == "independent_ppo":
+        controller = algo_independent.load_controller(checkpoint_path, device=device)
+    elif algo == "mappo":
+        controller = algo_mappo.load_controller(checkpoint_path, device=device)
+    else:
+        raise ValueError(f"Unsupported checkpoint algo: {algo}")
+    return algo, controller, checkpoint
+
+
+def validate_checkpoint_freshness(checkpoint_path: str | Path, checkpoint: dict[str, object]) -> None:
+    path = Path(checkpoint_path)
+    if path.name != "final.pt":
+        return
+
+    final_global_step = int(checkpoint.get("global_step", 0) or 0)
+    stale_candidates: list[tuple[int, str]] = []
+    for sibling in sorted(path.parent.glob("update_*.pt")):
+        sibling_checkpoint = torch.load(sibling, map_location="cpu")
+        sibling_global_step = int(sibling_checkpoint.get("global_step", 0) or 0)
+        if sibling_global_step > final_global_step:
+            stale_candidates.append((sibling_global_step, sibling.name))
+
+    if not stale_candidates:
+        return
+
+    best_global_step, best_name = max(stale_candidates, key=lambda item: item[0])
+    raise ValueError(
+        f"{path} appears stale or overwritten: final.pt has global_step={final_global_step}, "
+        f"but {best_name} has global_step={best_global_step}. "
+        f"Evaluate the newer update checkpoint instead."
+    )
+
+
+def main() -> None:
+    args = parse_args()
+    device = get_device(args.device)
+    algo, controller, checkpoint = load_controller(args.checkpoint, device)
+    validate_checkpoint_freshness(args.checkpoint, checkpoint)
+    train_seed = int(checkpoint["seed"])
+    config = load_experiment_config(args.env_config)
+    if args.with_pedestrians:
+        set_pedestrians_enabled(config, True)
+    variant = experiment_variant(config)
+    validate_checkpoint_variant(checkpoint, variant or "vehicle", args.checkpoint)
+    manifest = load_manifest(args.manifest or default_manifest_path(config))
+    intensities = [args.intensity] if args.intensity else manifest["intensities"]
+
+    for intensity in intensities:
+        rows = []
+        for route_spec in route_specs_for_split(manifest, split=args.split, intensity=intensity):
+            run_dir = eval_dir(
+                algo,
+                args.split,
+                intensity,
+                int(route_spec["seed"]),
+                variant=variant,
+                train_seed=train_seed,
+            )
+            summary = run_policy_episode(
+                algo=algo,
+                controller=controller,
+                config=config,
+                route_file=route_spec["path"],
+                route_seed=int(route_spec["seed"]),
+                output_dir=run_dir,
+                variant=variant or "vehicle",
+                deterministic=not args.stochastic,
+                use_gui=args.gui,
+            )
+            summary["intensity"] = intensity
+            summary["train_seed"] = train_seed
+            rows.append(summary)
+        aggregate = aggregate_episode_summaries(rows)
+        aggregate.update(
+            {
+                "algorithm": algo,
+                "split": args.split,
+                "intensity": intensity,
+                "variant": variant or "vehicle",
+                "train_seed": train_seed,
+                "checkpoint": str(Path(args.checkpoint)),
+            }
+        )
+        output_root = eval_group_dir(algo, args.split, intensity, variant=variant, train_seed=train_seed)
+        write_csv(output_root / "episodes.csv", rows)
+        write_json(output_root / "aggregate.json", aggregate)
+        print(output_root / "aggregate.json")
+
+
+if __name__ == "__main__":
+    main()

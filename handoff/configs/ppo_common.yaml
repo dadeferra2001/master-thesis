@@ -1,0 +1,23 @@
+train:
+  total_timesteps: 300000
+  learning_rate: 0.0003
+  anneal_lr: true
+  gamma: 0.99
+  gae_lambda: 0.95
+  num_steps: 256
+  update_epochs: 4
+  num_minibatches: 4
+  clip_coef: 0.2
+  vf_coef: 0.5
+  ent_coef: 0.01
+  anneal_ent_coef: true
+  ent_coef_final: 0.001
+  max_grad_norm: 0.5
+  target_kl: null
+  hidden_sizes: [128, 128]
+  device: auto
+  save_every_updates: 25
+
+experiment:
+  intensities: ["low", "medium", "high"]
+  train_seeds: [0, 1, 2]

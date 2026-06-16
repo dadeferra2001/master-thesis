@@ -1,0 +1,3 @@
+train:
+  num_steps: 256
+  hidden_sizes: [256, 256]

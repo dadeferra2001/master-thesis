@@ -1,0 +1,4 @@
+train:
+  num_steps: 256
+  hidden_sizes: [128, 128]
+  agent_id: true
